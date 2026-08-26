@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Registration | YASK Samiti MP</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-navy: #0f172a; --card-slate: #1e293b; --gold: #fbbf24; --link-blue: #3b82f6; --text-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 10px; background-color: var(--bg-navy);
+            background-image: radial-gradient(circle at top right, #1e3a8a, transparent), radial-gradient(circle at bottom left, #312e81, transparent);
+            background-attachment: fixed; color: var(--text-light); font-family: 'Segoe UI', sans-serif;
+            display: flex; flex-direction: column; align-items: center; overflow-x: hidden;
+        }
+
+        .registration-box, .receipt-card {
+            width: 100%; max-width: 500px; background: var(--card-slate);
+            border-radius: 25px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-top: 60px; position: relative;
+        }
+
+        /* लोगो फिक्स - बिल्कुल गोल */
+        .logo-container {
+            position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            width: 90px; height: 90px; background: #fff; border-radius: 50%;
+            padding: 2px; border: 3px solid var(--gold); overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .logo-container img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+
+        .form-header h1 { color: var(--gold); text-align: center; margin: 40px 0 5px; font-size: 19px; text-transform: uppercase; }
+        .form-header p { text-align: center; margin-bottom: 20px; opacity: 0.8; font-size: 12px; }
+
+        .section-tag { color: var(--gold); font-size: 11px; font-weight: bold; margin: 20px 0 10px; text-transform: uppercase; border-bottom: 1px solid rgba(251, 191, 36, 0.2); padding-bottom: 5px; }
+
+        input, select {
+            width: 100%; padding: 12px; background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+            color: #fff; font-size: 14px; outline: none; margin-bottom: 15px;
+        }
+        label { display: block; font-size: 11px; color: #cbd5e1; margin-bottom: 5px; font-weight: 600; }
+        select option { background: #1e293b; color: #fff; }
+
+        #submitBtn {
+            width: 100%; padding: 16px; background: var(--gold); color: #000;
+            border: none; border-radius: 15px; font-size: 17px; font-weight: 800; cursor: pointer;
+        }
+
+        .signin-link { text-align: center; margin-top: 15px; font-size: 14px; }
+        .signin-link a { color: var(--link-blue); text-decoration: none; font-weight: bold; }
+
+        /* Receipt UI */
+        #receiptWrapper { display: none; margin-top: 20px; width: 100%; max-width: 480px; padding-bottom: 50px; }
+        .receipt-card { background: #ffffff; color: #1a1a1a; border-top: 8px solid var(--gold); }
+        .receipt-card h2 { text-align: center; color: #1e3a8a; border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 18px; }
+        .data-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+        
+        .receipt-btns { display: flex; gap: 10px; margin-top: 20px; width: 100%; }
+        .btn-receipt { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 700; color: #fff; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="registration-box" id="registrationForm">
+    <div class="logo-container">
+        <img src="https://lh3.googleusercontent.com/d/1_3vjppXdkVUv0voXV0eoKOiiz3iYQA9C" alt="Samiti Logo">
+    </div>
+    <div class="form-header">
+        <h1>मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</h1>
+    </div>
+
+    <div class="section-tag">Personal Details</div>
+    <label>Full Name *</label>
+    <input type="text" id="name" placeholder="FULL NAME" oninput="this.value = this.value.toUpperCase()">
+    
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>Mobile *</label><input type="tel" id="mobile" maxlength="10"></div>
+        <div style="flex:1;"><label>WhatsApp *</label><input type="tel" id="whatsapp" maxlength="10"></div>
+    </div>
+
+    <label>Email ID *</label>
+    <input type="email" id="email" placeholder="example@mail.com">
+    <label>Password *</label>
+    <input type="password" id="password" placeholder="Min 6 Characters">
+
+    <div class="section-tag">Location & Job Info</div>
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>Division *</label><select id="division" onchange="updateDistricts()"></select></div>
+        <div style="flex:1;"><label>District *</label><select id="district" onchange="updateTehsils()"><option value="">चुनें</option></select></div>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>Tehsil *</label><select id="tehsil"><option value="">चुनें</option></select></div>
+        <div style="flex:1;"><label>Join Date *</label><input type="date" id="joinDate"></div>
+    </div>
+
+    <label>Department *</label>
+    <select id="workDept" onchange="updatePosts()"></select>
+    <label>Designation *</label>
+    <select id="post"><option value="">चुनें</option></select>
+
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label>Pincode *</label><input type="text" id="pincode" maxlength="6"></div>
+        <div style="flex:1;"><label>Faimly Voters *</label><input type="number" id="voters"></div>
+    </div>
+    <label>Monthly Salary *</label>
+    <input type="number" id="salary" placeholder="Max 30000">
+
+    <button id="submitBtn" onclick="handleRegistration()">CREATE ACCOUNT</button>
+    <div class="signin-link">
+        Already have an account? <a href="https://uvaaoutsource.blogspot.com/p/singin.html">Sign In Here</a>
+    </div>
+</div>
+
+<div id="receiptWrapper">
+    <div class="receipt-card" id="receiptFinal">
+        <div style="text-align:center;">
+            <img src="https://lh3.googleusercontent.com/d/1hFpLHkijVKMubzPpdyAB-BNirAIZJ9zI" alt="Samiti Logo" width="60" height="60" style="border-radius:50%; object-fit:cover;">
+            <h3 style="margin:5px 0; font-size:14px; color:#1e3a8a;">मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</h3>
+        </div>
+        <h2>MEMBERSHIP RECEIPT</h2>
+        <div class="data-row"><b>Unique ID:</b> <span id="res_id" style="color:red; font-weight:800;"></span></div>
+        <div class="data-row"><b>Name:</b> <span id="res_name"></span></div>
+        <div class="data-row"><b>Mobile:</b> <span id="res_mob"></span></div>
+        <div class="data-row"><b>Location:</b> <span id="res_loc"></span></div>
+        <div class="data-row"><b>Join Date:</b> <span id="res_join"></span></div>
+        <div class="data-row"><b>Reg. Date:</b> <span id="res_time"></span></div>
+        <div id="qrOutput" style="display:flex; justify-content:center; margin-top:15px;"></div>
+    </div>
+    <div class="receipt-btns">
+        <button class="btn-receipt" style="background:#059669;" onclick="window.print()">PRINT</button>
+        <button class="btn-receipt" style="background:#2563eb;" onclick="downloadJPG()">DOWNLOAD JPG</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+// Firebase Config (Same as provided)
+const firebaseConfig = {
+    apiKey: "AIzaSyBiZr2tFrPWcsZvKcVp0LbjBpRdgM615b4",
+    authDomain: "uva-outsorce-samajik-kalyan.firebaseapp.com",
+    projectId: "uva-outsorce-samajik-kalyan",
+    storageBucket: "uva-outsorce-samajik-kalyan.firebasestorage.app",
+    messagingSenderId: "1014885936374",
+    appId: "1:1014885936374:web:a669a91286102a315950d7"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+const mpData ={
+       "Bhopal": {
+        "Bhopal": ["Huzur", "Berasia", "Kolar", "Govindpura", "City Circle", "Bairagarh"],
+        "Raisen": ["Raisen", "Gairatganj", "Begamganj", "Silwani", "Bareli", "Udaipura", "Badi", "Goharganj", "Sultanpur", "Dehgaon"],
+        "Rajgarh": ["Rajgarh", "Biaora", "Narsinghgarh", "Sarangpur", "Khilchipur", "Zirapur", "Pachore", "Kuriwar"],
+        "Sehore": ["Sehore", "Ashta", "Ichhawar", "Budni", "Rehti", "Bhairunda", "Jawar", "Shyampur", "Doraha"],
+        "Vidisha": ["Vidisha", "Ganj Basoda", "Gyaraspur", "Kurwai", "Sironj", "Lateri", "Nateran", "Tyonda", "Gulabganj"]
+    },
+    "Indore": {
+        "Indore": ["Indore", "Mhow", "Sanwer", "Depalpur", "Kanadia", "Khudel", "Rau", "Hatod", "Bicholi Hapsi", "Mallarganj", "Juni Indore"],
+        "Dhar": ["Dhar", "Badnawar", "Sardarpur", "Manawar", "Dharampuri", "Gandhwani", "Kukshi", "Dahi", "Pithampur", "Tanda", "Bagh"],
+        "Jhabua": ["Jhabua", "Thandla", "Petlawad", "Meghnagar", "Rama", "Ranapur"],
+        "Alirajpur": ["Alirajpur", "Jobat", "Sondwa", "Katthiwada", "Udaygarh", "Chandrashekhar Azad Nagar"],
+        "Khargone": ["Khargone", "Kasrawad", "Maheshwar", "Barwah", "Bhikangaon", "Jhirnya", "Segaon", "Bhagwanpura", "Gogawan", "Sanawad"],
+        "Barwani": ["Barwani", "Sendhwa", "Pansemal", "Niwali", "Thikri", "Rajpur", "Warla", "Anjad"],
+        "Khandwa": ["Khandwa", "Pandhana", "Punasa", "Harsud", "Khalwa", "Mundhi"],
+        "Burhanpur": ["Burhanpur", "Nepanagar", "Khaknar"]
+    },
+    "Gwalior": {
+        "Gwalior": ["Gwalior", "Dabra", "Bhitarwar", "Chinour", "Ghatigaon", "Morar", "Tansen"],
+        "Shivpuri": ["Shivpuri", "Pohari", "Kolaras", "Pichhore", "Karera", "Narwar", "Badarwas", "Khaniadhana", "Rannod", "Bairad"],
+        "Guna": ["Guna", "Raghogarh", "Chachoura", "Kumbhraj", "Aaron", "Bamori", "Madhusudangarh"],
+        "Ashoknagar": ["Ashoknagar", "Chanderi", "Mungawali", "Isagarh", "Shadhura", "Nai Sarai", "Piprai"],
+        "Datia": ["Datia", "Sewda", "Bhander", "Indergarh", "Badoni"]
+    },
+    "Jabalpur": {
+        "Jabalpur": ["Jabalpur", "Patan", "Sihora", "Majhouli", "Shahpura", "Panagar", "Kundam", "Adhartal", "Gorakhpur", "Ranjhi"],
+        "Katni": ["Katni", "Rithi", "Bahoriband", "Sleemanabad", "Vijayraghavgarh", "Barhi", "Badwara", "Dhimarkheda"],
+        "Narsinghpur": ["Narsinghpur", "Gotegaon", "Kareli", "Gadarwara", "Tendukheda", "Saikheda"],
+        "Chhindwara": ["Chhindwara", "Amarwara", "Chourai", "Junnardeo", "Parasia", "Mohkhed", "Umreth", "Bichhua", "Harrai", "Chand"],
+        "Pandhurna": ["Pandhurna", "Sausar"],
+        "Seoni": ["Seoni", "Barghat", "Keolari", "Lakhnadon", "Ghansaur", "Chhapara", "Kurai", "Arizon"],
+        "Mandla": ["Mandla", "Nainpur", "Bichhiya", "Niwas", "Narayanganj", "Ghughari"],
+        "Balaghat": ["Balaghat", "Waraseoni", "Baihar", "Katangi", "Lanji", "Kirnapur", "Khairlanji", "Lalbarra", "Tirodi", "Birsa"],
+        "Dindori": ["Dindori", "Shahpura", "Mehandwani", "Bajag", "Karanjiya", "Samnapur"]
+    },
+    "Ujjain": {
+        "Ujjain": ["Ujjain", "Badnagar", "Khachrod", "Mahidpur", "Tarana", "Ghattia", "Jharda", "Nagda", "Makdon"],
+        "Dewas": ["Dewas", "Sonkatch", "Hatpipalya", "Bagli", "Kannod", "Khategaon", "Tonk Khurd", "Satwas", "Udaynagar"],
+        "Ratlam": ["Ratlam", "Sailana", "Jaora", "Alot", "Piploda", "Bajna", "Tal", "Rawoti"],
+        "Mandsaur": ["Mandsaur", "Sitamau", "Bhanpura", "Garoth", "Malhargarh", "Shamgarh", "Suwasra", "Daloda"],
+        "Neemuch": ["Neemuch", "Jawad", "Manasa", "Jeeran", "Singoli", "Rampura"],
+        "Shajapur": ["Shajapur", "Shujalpur", "Kalapipal", "Gulana", "Mohan Badodiya", "Polaykalan"],
+        "Agar Malwa": ["Agar", "Barod", "Susner", "Nalkheda"]
+    },
+    "Rewa": {
+        "Rewa": ["Rewa", "Huzur", "Gudh", "Raipur Karchuliyan", "Sirmour", "Teonthar", "Managawan", "Jawa", "Semaria"],
+        "Mauganj": ["Mauganj", "Hanumana", "Naigarhi", "Devtalab"],
+        "Satna": ["Satna", "Raghurajnagar", "Rampur Baghelan", "Nagod", "Uchehara", "Amarpatan", "Kotar", "Birsinghpur", "Kothi", "Majhgawan"],
+        "Maihar": ["Maihar", "Amarpatan", "Ramnagar"],
+        "Sidhi": ["Sidhi", "Gopad Banas", "Churhat", "Rampur Naikin", "Majhouli", "Kusmi", "Bahari"],
+        "Singrauli": ["Waidhan", "Deosar", "Chitrangi", "Mada", "Sarai", "Singrauli Nagar"]
+    },
+    "Sagar": {
+        "Sagar": ["Sagar", "Rehli", "Garhakota", "Deuri", "Bina", "Khurai", "Banda", "Shahgarh", "Rahatgarh", "Kesli", "Malthone", "Jaisinagar", "Bina-Itawa"],
+        "Damoh": ["Damoh", "Hatta", "Patharia", "Jabera", "Batiyagarh", "Patera", "Tendukheda", "Hindoriya"],
+        "Panna": ["Panna", "Gunour", "Pawai", "Shahnagar", "Ajaigarh", "Devendranagar", "Simariya", "Amanganj"],
+        "Chhatarpur": ["Chhatarpur", "Nowgaon", "Maharajpur", "Lavkushnagar", "Rajnagar", "Bijawar", "Bakswaha", "Gaurihar", "Chandla", "Bada Malhera"],
+        "Tikamgarh": ["Tikamgarh", "Baldevgarh", "Jatara", "Palera", "Khargapur", "Mohangarh", "Digoda"],
+        "Niwari": ["Niwari", "Orchha", "Prithvipur"]
+    },
+    "Narmadapuram": {
+        "Narmadapuram": ["Narmadapuram", "Itarsi", "Seoni Malwa", "Sohagpur", "Pipariya", "Babai", "Dolariya"],
+        "Harda": ["Harda", "Khirkiya", "Timarni", "Handia", "Sirali"],
+        "Betul": ["Betul", "Multai", "Amla", "Bhainsdehi", "Shahpur", "Ghoradongri", "Chicholi", "Athner", "Prabhat Pattan"]
+    },
+    "Shahdol": {
+        "Shahdol": ["Sohagpur", "Beohari", "Jaitpur", "Gohparu", "Jaisinghnagar", "Budhar"],
+        "Anuppur": ["Anuppur", "Kotma", "Pushprajgarh", "Jaithari", "Venkatnagar"],
+        "Umaria": ["Umaria", "Pali", "Manpur", "Nowrozabad", "Chandia"]
+    },
+    "Chambal": {
+        "Morena": ["Morena", "Ambah", "Porsa", "Joura", "Sabalgarh", "Kailaras", "Banmore"],
+        "Bhind": ["Bhind", "Gohad", "Mehgaon", "Lahar", "Ron", "Mihona", "Ater", "Mau"],
+        "Sheopur": ["Sheopur", "Vijaypur", "Karahal", "Beerpur", "Baroda"]
+    }
+}
+ 
+  
+  const deptPosts = {
+ 
+    // --- NEWLY ADDED DEPARTMENTS ---
+    "AYUSH Department": [
+        "Yoga Instructor", 
+        "Yoga Assistant",
+        "Medical Officer (Ayush)", 
+        "Pharmacist (Ayurved/Unani/Homeopathy)", 
+        "Compounder", 
+        "Staff Nurse", 
+        "Lab Technician", 
+        "Data Entry Operator", 
+        "Computer Operator", 
+        "Peon", 
+        "Sweeper", 
+        "Security Guard", 
+      "Driver", 
+        "CHP (Community Health Provider)"
+    ],
+    "Sandipani Vidyalaya (Education Dept)": [
+        "Primary Teacher (PRT)",
+        "Middle School Teacher (TGT)",
+        "High School Teacher (PGT)",
+        "Guest Faculty (अतिथि शिक्षक)",
+        "Music Teacher (Sangeet Shikshak)",   // म्यूजिक टीचर
+        "Dance Teacher (Nritya Shikshak)",    // डांस टीचर
+        "Art & Craft Instructor",             // कला एवं शिल्प
+        "Physical Education Trainer (PET)",   // खेल शिक्षक
+        "Computer Instructor",
+        "Lab Assistant / Attendant",
+        "Librarian",
+        "Office Assistant / Clerk",
+        "Data Entry Operator",
+        "Peon",
+        "Security Guard / Watchman",
+        "Bus Driver / Helper / Conductor",
+        "Safai Karmi / Sweeper"
+    ],
+    "Bhoj University": ["Guest Faculty", "Lab Attendant", "Peon", "Security Guard", "Computer Operator", "Data Entry Operator", "Library Assistant","Driver",  "Sweeper"],
+    
+    "Atal Bihari Vajpayee Hindi University": ["Guest Faculty", "Assistant Professor (Guest)", "Lab Assistant", "Computer Operator", "Data Entry Operator", "Peon", "Security Guard", "Driver", "Library Assistant"],
+    
+    "Barkatullah University": ["Lab Assistant", "Library Assistant", "Data Entry Operator", "Computer Operator","Driver",  "Peon", "Sweeper", "Security Guard", "Guest Faculty", "Hostel Warden"],
+    
+    "Panjiyan Bhavan (Registration)": ["Data Entry Operator", "Computer Operator", "Clerk", "Peon", "Driver", "Security Guard", "Scanning Assistant"],
+    
+    "Hamidia Hospital": ["Ward Boy", "Aya", "Staff Nurse", "Lab Technician", "Data Entry Operator", "Computer Operator","Driver",  "Sweeper", "Safai Kamgar", "Security Guard", "Pharmacist"],
+    
+    "JP District Hospital (1250) Bhopal": ["Ward Boy", "Aya", "Staff Nurse", "Lab Technician", "Data Entry Operator", "Driver", "Sweeper", "Safai Kamgar", "Security Guard", "Kayakalp Supervisor"],
+    
+    "Registrar Firms & Societies": ["Data Entry Operator", "Computer Operator", "Clerk", "Peon", "Driver", "Security Guard"],
+    
+    "Collector Office (Bhopal & 51 Districts)": ["Data Entry Operator", "Computer Operator", "Clerk", "Driver", "Peon", "Chowkidar", "Security Guard", "Process Server"],
+    
+    "Zila Panchayat Office (Bhopal & 51 Districts)": ["Data Entry Operator", "Computer Operator", "Technical Assistant", "Gram Rozgar Sahayak", "Peon", "Driver", "Accountant"],
+
+    // --- EXISTING DEPARTMENTS ---
+    "Revenue Department": ["Surveyor", "Data Entry Operator", "Peon", "Driver", "Security Guard", "Clerk", "Computer Operator", "Patwari Assistant", "Chowkidar"],
+    
+    "Health Department": ["Ward Boy", "Aya", "Staff Nurse", "Lab Technician", "Data Entry Operator", "Safai Kamgar", "Driver", "Computer Operator", "Pharmacist", "Kayakalp Supervisor", "Supervisor", "Sweeper"],
+    
+    "Education Department": ["Computer Instructor", "Vocational Trainer", "Peon", "Safai Karmi", "Security Guard", "Driver", "Computer Operator", "Data Entry Operator", "Lab Attendant", "Supervisor", "Library Assistant"],
+    
+    "Higher Education Department": ["Guest Faculty", "Lab Assistant", "Librarian", "Data Entry Operator", "Computer Operator","Driver",  "Peon", "Sweeper", "Security Guard"],
+    
+    "Energy Department": ["Line Attendant", "Assistant Lineman", "Meter Reader", "Computer Operator", "Office Assistant","Driver",  "Technical Helper", "Pump Operator"],
+    
+    "Tribal Affairs Department": ["Hostel Superintendent", "Teacher (Guest)", "Data Entry Operator","Driver",  "Computer Operator", "Peon", "Cook", "Security Guard"],
+    
+    "Urban Administration": ["Driver", "Safai Mitra", "Valveman", "Electrician", "Data Entry Operator", "Computer Operator", "Mali", "Tax Collector", "Pump Operator"],
+    
+    "Urban Board": ["Clerk", "Data Entry Operator", "Computer Operator", "Security Guard", "Safai Karmi", "Peon", "Pump Operator"],
+    
+    "Rural Development & Panchayat": ["Gram Rozgar Sahayak", "Data Entry Operator", "Computer Operator","Driver",  "Technical Assistant", "Peon", "Swachhta Grahi", "Engineer", "Chowkidar"],
+    
+    "Agriculture Department": ["Technical Assistant", "Data Entry Operator", "Computer Operator","Driver",  "Surveyor", "Field Worker"],
+    
+    "Mandi Board": ["Mandi Inspector", "Data Entry Operator", "Computer Operator", "Security Guard", "Chowkidar", "Driver", "Peon (भृत्य)", "Safai Karmi"],
+    
+    "Cooperation Department": ["Data Entry Operator", "Clerk", "Salesman", "Computer Operator", "Chowkidar", "Driver", "Part-time Security Guard", "Peon"],
+    
+    "Election Department": ["Data Entry Operator", "Supervisor", "Computer Operator", "Clerk", "Driver", "Peon", "Security Guard"],
+    
+    "Transport Department": ["Check Post Assistant", "Data Entry Operator", "Guard", "Clerk", "Computer Operator", "Driver",  "Helper"],
+    
+    "Public Works Department": ["Helper", "Supervisor", "Data Entry Operator", "Mali", "Watchman", "Sub-Engineer","Driver",  "Security Worker"],
+    
+    "Women and Child Development": ["Data Entry Operator", "Block Coordinator", "Peon", "Computer Operator", "Sahayika", "Driver", "Counselor"],
+    
+    "Police Department": ["Cook", "Dhobi", "Safai Karmi", "Driver", "Computer Operator", "Data Entry Operator", "Security Guard"],
+    
+    "Forest Department": ["Forest Guard", "Driver", "Data Entry Operator", "Computer Operator", "Watchman", "Fire Watcher"],
+    
+    "Technical Education": ["Guest Faculty", "Training Officer", "Data Entry Operator", "Lab Assistant", "Driver", "Peon", "Security Guard"],
+    
+    "Water Resources": ["Gauge Reader", "Canal Guard", "Data Entry Operator", "Computer Operator", "Peon", "Helper", "Driver", "Pump Operator"],
+    
+    "NVDA": ["Assistant Engineer", "Sub Engineer", "Draftsman", "Data Entry Operator", "Computer Operator", "Peon", "Driver", "Security Worker"],
+    
+    "Food and Civil Supplies": ["Supply Inspector", "District Supply Officer", "Assistant Supply Officer", "Data Entry Operator", "Computer Operator", "Peon", "Driver", "Quality Inspector"],
+
+    "Finance Department": ["Accountant", "Assistant Accounts Officer", "Audit Officer", "Treasury Officer", "Data Entry Operator", "Computer Operator", "Supervisor", "Driver", "Peon", "Clerk"],
+    
+    "Cooperative Bank": ["Branch Manager", "Assistant Manager", "Cashier", "Clerical Staff", "Banking Assistant", "Data Entry Operator", "Computer Operator", "Peon", "Security Guard", "Recovery Officer"],
+    
+    "Educational Institutions": ["Guest Faculty", "Lab Attendant", "Peon", "Security Guard", "Driver", "Computer Operator", "Sweeper", "Library Assistant"], 
+    
+    "MNREGA": ["Gram Rozgar Sahayak", "Technical Assistant", "Data Entry Operator", "Accountant", "Driver", "Peon"],
+    
+    "State Livelihood Mission": ["District Manager", "Block Coordinator", "Community Training Assistant", "Driver", "Data Entry Operator", "Peon"],
+    
+    "MP Rural Road Development (MPRRDA)": ["Sub Engineer", "Draftsman", "Data Entry Operator", "Computer Operator", "Driver", "Peon"],
+    
+    "MP Road Development Corp (MPRDC)": ["Toll Collector", "Sub Engineer", "Data Entry Operator", "Computer Operator", "Peon", "Driver"],
+    
+    "Panchayat Raj & Zila Panchayat": ["Data Entry Operator", "Computer Operator", "Clerk", "Peon", "Driver", "Technical Assistant"],
+    
+    "Development Commissioner Office": ["Data Entry Operator", "Clerk", "Computer Operator", "Peon", "Driver"],
+    
+    "Rural Engineering Service (RES)": ["Sub Engineer", "Draftsman", "Tracer", "Driver", "Data Entry Operator", "Computer Operator", "Peon"],
+    
+    "Academy of Administration": ["Training Coordinator", "Hostel Warden", "Data Entry Operator", "Driver", "Peon", "Mali", "Security Guard"],
+    
+    "Textbook Corporation": ["Proof Reader", "Data Entry Operator", "Warehouse Assistant", "Peon", "Driver"],
+    
+    "MP Tourism Board/Culture Dept": ["Information Assistant", "Guide", "Data Entry Operator", "Driver", "Security Guard", "Mali", "Ticket Collector"],
+    
+    "Marketing Federation": ["Godown Keeper", "Data Entry Operator", "Computer Operator", "Peon", "Driver", "Guard"],
+    
+    "Directorate of Public Instruction (DPI)": ["Data Entry Operator", "Computer Operator", "Clerk", "Peon", "Driver"],
+    
+    "AIDS Control Society / NHM": ["Program Manager", "Data Entry Operator", "Accountant", "Lab Technician", "Staff Nurse", "Counsellor", "Driver"],
+    
+    "State Information Commission": ["Legal Assistant", "Data Entry Operator", "Driver",  "Computer Operator", "Stenographer", "Peon", "Driver"],
+    
+    "WALMI": ["Technical Assistant", "Field Worker", "Data Entry Operator", "Computer Operator", "Peon", "Driver",  "Mali"],
+    
+    "MP Housing & Infrastructure Board": ["Sub Engineer", "Surveyor", "Data Entry Operator", "Peon", "Driver", "Security Guard"],
+    
+    "RERA": ["Legal Assistant", "Data Entry Operator", "Computer Operator", "Stenographer","Driver",  "Peon"],
+    
+    "MPSEDC": ["Technical Assistant", "IT Executive", "Data Entry Operator", "Computer Operator", "Driver", "Peon"],
+    
+    "Public Relations Department": ["Content Creator", "Photographer", "Data Entry Operator", "Computer Operator", "Peon", "Driver"],
+    
+    "Gas Tragedy Relief Dept": ["Ward Boy", "Driver", "Data Entry Operator", "Staff Nurse", "Peon", "Sweeper"],
+    
+    "Skill Development": ["Training Officer", "Guest Faculty", "Data Entry Operator", "Driver", "Computer Operator", "Peon"],
+    
+    "MSME": ["Field Officer", "Data Entry Operator", "Computer Operator", "Peon", "Driver"],
+    
+    "Sanchi Dugdh Sangh": ["Plant Operator", "Lab Assistant", "Driver", "Sales Assistant", "Security Guard", "Sweeper"],
+    
+    "MP Building Development Corp": ["Sub Engineer", "Supervisor", "Data Entry Operator", "Peon", "Driver", "Security Guard"],
+    
+    "Social Justice Department": ["Social Worker", "Driver", "Counselor", "Data Entry Operator", "Computer Operator", "Peon"],
+    
+    "Swachh Bharat Mission": ["Block Coordinator", "District Coordinator", "Data Entry Operator", "Sweeper", "Driver"], 
+       "MP METRO (MPMRCL)": [
+        "Station Controller (SC)",
+        "Train Operator (TO)",
+        "Customer Care Commissioner",
+        "Maintainer (Civil/Electrical/Signalling)",
+        "Junior Engineer (JE)",
+        "Section Engineer",
+        "Accountant / Office Assistant",
+        "Data Entry Operator",
+        "Security Personnel",
+        "Housekeeping Staff",
+        "Ticket Counter Operator",
+        "Other Technical Staff"
+    ],
+
+       "Pollution Control Board": [
+        "Field Supervisor", "Technician", "Scientist Assistant", "Data Entry Operator", 
+        "Computer Operator", "Lab Assistant", "Peon", "Security Guard"
+    ],
+
+    "Mineral Resources Department & State Mining Corporation": [
+        "Field Supervisor", "Mining Inspector", "Surveyor", "Store Incharge", 
+        "Data Entry Operator", "Computer Operator", "Driver", "Peon"
+    ],
+
+    "District Hospital": [
+        "Ward Boy", "Aya", "Staff Nurse", "Lab Technician", "Data Entry Operator", 
+        "Computer Operator", "Store Incharge", "Driver", "Sweeper", "Guard", "Cook"
+    ],
+
+    "District Medical College": [
+        "Lab Technician", "Technician", "Store Incharge", "Data Entry Operator", 
+        "Computer Operator", "Ward Boy", "Driver", "Sweeper", "Guard", "Peon"
+    ],
+
+    "Sant Ravidas MP Hastshilp evam Hathkargha Vikas Nigam": [
+        "Store Incharge", "Salesman", "Data Entry Operator", "Computer Operator", 
+        "Technician (Weaving/Craft)", "Peon", "Guard", "Driver"
+    ],
+
+    "Madhya Pradesh Bhawan, New Delhi": [
+        "Receptionist", "Room Boy", "Cook", "Waiter", "Data Entry Operator", 
+        "Computer Operator", "Peon", "Sweeper", "Guard", "Driver"
+    ],
+
+    "MP Industrial Development Corporation (MPIDC) Regional Office Ujjain": [
+        "Field Supervisor", "Estate Manager Assistant", "Data Entry Operator", 
+        "Computer Operator", "Technician", "Peon", "Guard", "Driver"
+    ],
+
+    "(Rajya Shiksha Kendra)": [
+        "Block Coordinator", "Computer Operator", "Data Entry Operator", 
+        "Store Incharge", "Technician (IT)", "Peon", "Guard"
+    ],
+
+    "Department of Horticulture And Food Processing": [
+        "Field Supervisor", "Horticulture Extension Officer Assistant", "Driver", "Store Incharge", 
+        "Data Entry Operator", "Computer Operator", "Technician", "Mali", "Peon"
+    ],
+
+    // --- EXISTING DEPARTMENTS UPDATED WITH NEW POSTS ---
+
+    "Social Justice Department": [
+        "Social Worker", "Counselor", "Data Entry Operator", "Computer Operator", 
+        "Receptionist", "Cook", "Peon", "Driver", "Guard"
+    ],
+
+    "Swachh Bharat Mission": [
+        "District Coordinator", "Block Coordinator", "Field Supervisor", 
+        "Data Entry Operator", "Sweeper", "Driver", "Guard"
+    ],
+
+    // --- OTHER OPTION (MASTER LIST) ---
+     
+      "Other Government Department": [
+        "Accountant", "Assistant Engineer", "Assistant Lineman", "Assistant Manager", "Aya", 
+        "Block Coordinator", "Branch Manager", "Cashier", "Chowkidar", "Clerk", 
+        "Computer Operator", "Counselor", "Data Entry Operator", "District Manager", 
+        "Draftsman", "Driver", "Electrician", "Engineer", "Field Worker", "Forest Guard", 
+        "Gram Rozgar Sahayak", "Guest Faculty", "Guide", "Helper", "Hostel Superintendent", 
+        "IT Executive", "Lab Assistant", "Lab Attendant", "Lab Technician", "Librarian", 
+        "Library Assistant", "Line Attendant", "Mali", "Mandi Inspector", "Meter Reader", 
+        "Nurse", "Office Assistant", "Patwari Assistant", "Peon (भृत्य)", "Pharmacist", 
+        "Photographer", "Plant Operator", "Program Manager", "Pump Operator", "Safai Kamgar", 
+        "Safai Mitra", "Sahayika", "Salesman", "Security Guard", "Security Worker", 
+        "Social Worker", "Staff Nurse", "Stenographer", "Sub Engineer", "Supervisor", 
+        "Supply Inspector", "Surveyor", "Sweeper", "Swachhta Grahi", "Technical Assistant", 
+        "Technical Helper", "Training Officer", "Valveman", "Vocational Trainer", "Ward Boy", "Watchman", "Other",
+    ],
+};
+
+window.onload = () => {
+    const div = document.getElementById("division");
+    div.innerHTML = '<option value="">-- संभाग चुनें --</option>';
+    Object.keys(mpData).forEach(d => div.options.add(new Option(d, d)));
+    const wd = document.getElementById("workDept");
+    wd.innerHTML = '<option value="">-- विभाग चुनें --</option>';
+    Object.keys(deptPosts).forEach(d => wd.options.add(new Option(d, d)));
+};
+
+function updateDistricts() {
+    const div = document.getElementById("division").value;
+    const dist = document.getElementById("district");
+    dist.innerHTML = '<option value="">-- जिला चुनें --</option>';
+    if(div) Object.keys(mpData[div]).forEach(d => dist.options.add(new Option(d, d)));
+}
+function updateTehsils() {
+    const div = document.getElementById("division").value;
+    const dist = document.getElementById("district").value;
+    const teh = document.getElementById("tehsil");
+    teh.innerHTML = '<option value="">-- तहसील चुनें --</option>';
+    if(div && dist) mpData[div][dist].forEach(t => teh.options.add(new Option(t, t)));
+}
+function updatePosts() {
+    const dept = document.getElementById("workDept").value;
+    const p = document.getElementById("post");
+    p.innerHTML = '<option value="">-- पद चुनें --</option>';
+    if(deptPosts[dept]) deptPosts[dept].forEach(post => p.options.add(new Option(post, post)));
+}
+
+async function handleRegistration() {
+    const btn = document.getElementById("submitBtn");
+    const fields = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        mob: document.getElementById("mobile").value.trim(),
+        wa: document.getElementById("whatsapp").value.trim(),
+        div: document.getElementById("division").value,
+        dist: document.getElementById("district").value,
+        teh: document.getElementById("tehsil").value,
+        join: document.getElementById("joinDate").value,
+        dept: document.getElementById("workDept").value,
+        post: document.getElementById("post").value,
+        pin: document.getElementById("pincode").value.trim(),
+        voters: document.getElementById("voters").value,
+        salary: document.getElementById("salary").value
+    };
+
+ // Strict Mandatory Check
+    for (let key in fields) {
+        if (!fields[key]) {
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Incomplete Form', 
+                text: 'Please fill all the required columns to proceed.' 
+            });
+            return;
+        }
+    }
+
+    if (fields.mob.length !== 10 || fields.wa.length !== 10) {
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Invalid Number', 
+            text: 'Mobile and WhatsApp numbers must be exactly 10 digits.' 
+        });
+        return;
+    }
+
+    if (!['45','46','47','48'].includes(fields.pin.substring(0,2))) {
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Location Restriction', 
+            text: 'Registration is only allowed for Madhya Pradesh residents.' 
+        });
+        return;
+    }
+
+    if (parseInt(fields.salary) > 30000 || parseInt(fields.voters) > 20) {
+        Swal.fire({ 
+            icon: 'warning', 
+            title: 'Limit Exceeded', 
+            text: 'Monthly salary must be under 30,000 and family voters under 20.' 
+        });
+        return;
+    }
+
+    btn.disabled = true; btn.innerText = "Processing...";
+
+    try {
+        const mobCheck = await db.collection("users").where("mob", "==", fields.mob).get();
+        if (!mobCheck.empty) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Mobile Number already exists!' });
+            btn.disabled = false; return;
+        }
+
+        const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const uId = alpha.charAt(Math.floor(Math.random()*26)) + alpha.charAt(Math.floor(Math.random()*26)) + alpha.charAt(Math.floor(Math.random()*26)) + Math.floor(100 + Math.random()*899);
+
+        const userCred = await auth.createUserWithEmailAndPassword(fields.email, document.getElementById("password").value);
+        const timestamp = new Date().toLocaleString('en-IN');
+
+        await db.collection("users").doc(userCred.user.uid).set({ ...fields, userId: uId, createdAt: timestamp });
+
+        document.getElementById("registrationForm").style.display = "none";
+        document.getElementById("receiptWrapper").style.display = "block";
+        
+        document.getElementById("res_id").innerText = uId;
+        document.getElementById("res_name").innerText = fields.name;
+        document.getElementById("res_mob").innerText = fields.mob;
+        document.getElementById("res_loc").innerText = fields.dist;
+        document.getElementById("res_join").innerText = fields.join;
+        document.getElementById("res_time").innerText = timestamp;
+
+        new QRCode(document.getElementById("qrOutput"), { text: uId, width: 90, height: 90 });
+        Swal.fire({ icon: 'success', title: 'Success', text: 'Receipt Generated!' });
+
+    } catch (error) {
+        Swal.fire({ icon: 'error', title: 'Error', text: error.message });
+        btn.disabled = false; btn.innerText = "CREATE ACCOUNT";
+    }
+}
+
+function downloadJPG() {
+    html2canvas(document.getElementById("receiptFinal"), { useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'YASK_Receipt.jpg';
+        link.href = canvas.toDataURL('image/jpeg');
+        link.click();
+    });
+}
+</script>
+</body>
+</html>
