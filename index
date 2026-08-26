@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Tiro+Devanagari+Hindi:ital@0;1&family=Yantramanav:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        :root {
+            --bg-main: #0c1017;
+            --bg-card: #161c26;
+            --bg-card-hover: #1e2634;
+            --gold-primary: #f59e0b;
+            --gold-light: #fbbf24;
+            --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --yellow-accent: #facc15;
+            --text-main: #ffffff;
+            --text-sub: #94a3b8;
+            --text-dark: #0f172a;
+            --border-color: rgba(245, 158, 11, 0.25);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --shadow-gold: 0 4px 20px -2px rgba(245, 158, 11, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Yantramanav', 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding-bottom: 95px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* --- Top Alert Bar --- */
+        .top-alert-bar {
+            background: var(--gold-gradient);
+            color: #000;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            letter-spacing: 0.3px;
+        }
+        .top-alert-bar a {
+            color: #000;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* --- Main Header Section --- */
+        .main-header {
+            background: linear-gradient(180deg, #161c26 0%, #0c1017 100%);
+            padding: 24px 16px 18px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        .logo-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .logo-img {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            border: 3px solid var(--gold-light);
+            background: #fff;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+            object-fit: cover;
+        }
+        .samiti-name {
+            font-size: 18px;
+            font-weight: 900;
+            color: #ffffff;
+            margin: 0 0 6px;
+            line-height: 1.3;
+            letter-spacing: 0.2px;
+        }
+        .samiti-name span {
+            color: var(--gold-light);
+        }
+        .reg-badge {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gold-light);
+            background: rgba(245, 158, 11, 0.12);
+            padding: 4px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        /* --- Leaders Quick Info --- */
+        .leaders-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 12px 16px;
+            background: #111620;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .leader-box {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 8px 12px;
+            border-radius: 10px;
+            border-left: 3px solid var(--gold-primary);
+            font-size: 11px;
+            color: var(--text-sub);
+        }
+        .leader-box b {
+            display: block;
+            color: #ffffff;
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+        .leader-box a {
+            color: var(--gold-light);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        /* --- Slogan Strip (Jan Suraaj Style) --- */
+        .slogan-strip {
+            text-align: center;
+            padding: 14px 16px;
+            background: rgba(245, 158, 11, 0.05);
+            border-bottom: 1px solid var(--card-border);
+        }
+        .slogan-strip h2 {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--gold-light);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .slogan-strip p {
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        /* --- Action Grid --- */
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 16px;
+        }
+        .action-card {
+            background: var(--bg-card);
+            padding: 16px 12px;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+            text-align: center;
+            text-decoration: none;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-card:active {
+            transform: scale(0.97);
+            background: var(--bg-card-hover);
+        }
+        .action-card i {
+            font-size: 24px;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+            transition: transform 0.2s;
+        }
+        .action-card span {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Special Highlighting Primary Button */
+        .action-card.btn-hero {
+            grid-column: span 2;
+            background: var(--gold-gradient);
+            color: #000;
+            border: none;
+            padding: 18px 14px;
+            box-shadow: var(--shadow-gold);
+        }
+        .action-card.btn-hero i {
+            color: #000;
+            font-size: 26px;
+        }
+        .action-card.btn-hero span {
+            font-size: 14px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- Share Button Strip --- */
+        .share-strip {
+            padding: 0 16px 16px;
+        }
+        .btn-share {
+            width: 100%;
+            padding: 14px;
+            background: #22c55e;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+            transition: 0.2s;
+        }
+        .btn-share:active {
+            transform: scale(0.98);
+        }
+
+        /* --- Content Sections --- */
+        .content-view {
+            display: none;
+            padding: 0 16px;
+            animation: modernFade 0.35s ease forwards;
+        }
+        .content-view.active {
+            display: block;
+        }
+        @keyframes modernFade {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 18px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .info-card h3 {
+            margin: 0 0 14px;
+            font-size: 15px;
+            color: var(--gold-light);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Live Counter Card */
+        .stats-hero-card {
+            text-align: center;
+            background: linear-gradient(180deg, #1e2634 0%, #131923 100%);
+            border: 1px solid var(--border-color);
+            padding: 24px 16px;
+            border-radius: 18px;
+            margin-bottom: 16px;
+        }
+        .stats-hero-card h2 {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--yellow-accent);
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .stats-hero-card p {
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* List Rows */
+        .list-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+        .list-row:last-child { border: none; }
+        .list-row span { color: #e2e8f0; font-weight: 500; }
+        .list-row b {
+            color: var(--gold-light);
+            font-size: 12px;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* Department Grid */
+        .dept-grid {
+            column-count: 2;
+            column-gap: 14px;
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.9;
+        }
+        .dept-grid div {
+            break-inside: avoid;
+            margin-bottom: 4px;
+        }
+
+        /* Bottom Fixed Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            z-index: 2000;
+            padding-bottom: 4px;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-sub);
+            text-align: center;
+            font-size: 10px;
+            font-weight: 700;
+            flex: 1;
+            transition: 0.2s;
+        }
+        .nav-link.active {
+            color: var(--gold-light);
+        }
+        .nav-link i {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-alert-bar">
+        <span><i class="fas fa-bullhorn"></i> संगठन से जुड़ें और अपनी आवाज उठाएं</span>
+        <a href="tel:7017745459"><i class="fas fa-phone-alt"></i> 7017745459</a>
+    </div>
+
+    <header class="main-header">
+        <div class="logo-wrap">
+            <img src="https://lh3.googleusercontent.com/d/1_3vjppXdkVUv0voXV0eoKOiiz3iYQA9C" class="logo-img" alt="Logo">
+        </div>
+        <h1 class="samiti-name">मध्य प्रदेश राज्य <span>आउटसोर्स कर्मचारी संघ</span></h1>
+        <span class="reg-badge"><i class="fas fa-check-circle"></i> पंजीयन: श्रम विभाग, म.प्र. शासन</span>
+    </header>
+
+    <section class="leaders-bar">
+        <div class="leader-box">
+            <b>श्री आशीष सिंह सिसोदिया</b>
+            <span>प्रदेश अध्यक्ष</span>
+            <a href="tel:7017745459"><i class="fas fa-phone-alt"></i> 7017745459</a>
+        </div>
+        <div class="leader-box">
+            <b>श्री विनेन्द्र सिंह</b>
+            <span>संगठन मंत्री</span>
+            <a href="#"><i class="fas fa-phone-alt"></i> संपर्क करें</a>
+        </div>
+    </section>
+
+    <div class="slogan-strip">
+        <h2>सही लोग • सही सोच • सामूहिक प्रयास</h2>
+        <p>सम्मान, सुरक्षा और नियमितीकरण की ओर अग्रसर</p>
+    </div>
+
+    <div class="action-grid">
+        <a href="https://uvaaoutsource.blogspot.com/p/singup.html" class="action-card btn-hero">
+            <i class="fas fa-user-plus"></i>
+            <span>नया रजिस्ट्रेशन करें (Join Movement)</span>
+        </a>
+        
+        <div class="action-card" onclick="showTab('committee')">
+            <i class="fas fa-users-cog"></i>
+            <span>पदाधिकारी सूची</span>
+        </div>
+        
+        <div class="action-card" onclick="showTab('dept')">
+            <i class="fas fa-building"></i>
+            <span>संबद्ध विभाग</span>
+        </div>
+        
+        <div class="action-card" onclick="showTab('why')">
+            <i class="fas fa-balance-scale"></i>
+            <span>अधिकार मार्गदर्शिका</span>
+        </div>
+        
+        <a href="https://uvaaoutsource.blogspot.com/p/singin.html" class="action-card">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>सदस्य लॉगिन</span>
+        </a>
+    </div>
+
+    <div class="share-strip">
+        <button class="btn-share" onclick="shareWeb()">
+            <i class="fab fa-whatsapp"></i> वॉट्सऐप पर दोस्तों को जोड़ें
+        </button>
+    </div>
+
+    <main>
+        <div id="tab-home" class="content-view active">
+            <div class="stats-hero-card">
+                <h2 id="member-count">...</h2>
+                <p><i class="fas fa-users"></i> कुल सक्रिय आउटसोर्स सदस्य</p>
+            </div>
+            
+            <div class="info-card">
+                <h3><i class="fas fa-hand-holding-heart"></i> हमारे प्रमुख उद्देश्य</h3>
+                <p style="font-size: 13px; color: var(--text-sub);">
+                    आउटसोर्स और संविदा कर्मियों के हितों की रक्षा, न्यूनतम कलेक्टर दर का समयबद्ध भुगतान, EPF/ESIC सुरक्षा और ठेका प्रथा के विरुद्ध वैधानिक संघर्ष।
+                </p>
+            </div>
+        </div>
+
+        <div id="tab-committee" class="content-view">
+            <div class="info-card">
+                <h3><i class="fas fa-user-tie"></i> मुख्य पदाधिकारी एवं कार्यकारिणी</h3>
+                
+                <div class="list-row"><span>1. श्री आशीष सिंह सिसोदिया</span><b>अध्यक्ष</b></div>
+                <div class="list-row"><span>2. श्री प्रकाश पुंज चौधरी</span><b>कार्यकारी अध्यक्ष</b></div>
+                <div class="list-row"><span>3. श्री अखिलेश श्रीवास्तव</span><b>उपाध्यक्ष</b></div>
+                <div class="list-row"><span>4. श्री सुनील शर्मा</span><b>उपाध्यक्ष</b></div>
+                <div class="list-row"><span>5. श्री अनिरुद्ध सिंह कुशवाहा</span><b>उपाध्यक्ष</b></div>
+                <div class="list-row"><span>6. श्री राहुल सक्सेना</span><b>संयुक्त महामंत्री</b></div>
+                <div class="list-row"><span>7. श्रीमती रीना राठौर</span><b>कोषाध्यक्ष</b></div>
+                <div class="list-row"><span>8. श्रीमती विमला तिवारी</span><b>महिला प्रकोष्ठ अध्यक्ष</b></div>
+                <div class="list-row"><span>9. श्री विनेन्द्र सिंह</span><b>संगठन मंत्री</b></div>
+                <div class="list-row"><span>10. श्री गुलशन मंसूरी</span><b>प्रदेश मंत्री</b></div>
+                <div class="list-row"><span>11. श्री दिनेश कुमार यदुवंशी</span><b>प्रदेश मंत्री</b></div>
+                <div class="list-row"><span>12. श्री नरेंद्र वर्मा</span><b>कार्यालय मंत्री</b></div>
+                <div class="list-row"><span>13. श्री पंकज पटेल</span><b>सदस्य</b></div>
+                <div class="list-row"><span>14. श्री हीरा लाल प्रजापति</span><b>सदस्य</b></div>
+                <div class="list-row"><span>15. श्री अरविंद कुमार अहिरवार</span><b>सदस्य</b></div>
+                <div class="list-row"><span>16. श्री जय प्रकाश नापित</span><b>सदस्य</b></div>
+                <div class="list-row"><span>17. श्री किशोर मालवीय</span><b>सदस्य</b></div>
+                <div class="list-row"><span>18. श्री नीतेश दोगुने</span><b>सदस्य</b></div>
+                <div class="list-row"><span>19. श्री वीरेंद्र कुमार मलैया</span><b>सदस्य</b></div>
+                <div class="list-row"><span>20. श्री प्रकाश मालवीय</span><b>सदस्य</b></div>
+
+                <div class="list-row" style="border-top: 1px dashed var(--gold-primary); margin-top: 8px; padding-top: 10px;">
+                    <span style="font-weight: bold; color: var(--gold-light);"><i class="fas fa-laptop-code"></i> श्री रोशन प्रजापति</span>
+                    <b>आईटी व तकनीकी प्रबंधन</b>
+                </div>
+            </div>
+        </div>
+      
+        <div id="tab-dept" class="content-view">
+            <div class="info-card">
+                <h3><i class="fas fa-sitemap"></i> संबद्ध शासकीय विभाग सूची</h3>
+                <div class="dept-grid">
+                    <div>1. नूतन कॉलेज</div>
+                    <div>2. अटल बिहारी वि.वि.</div>
+                    <div>3. भोज विश्वविद्यालय</div>
+                    <div>4. मनरेगा</div>
+                    <div>5. राज्य आजीविका मिशन</div>
+                    <div>6. ग्रामीण सड़क प्राधिकरण</div>
+                    <div>7. पंचायत राज संचालनालय</div>
+                    <div>8. विकास आयुक्त कार्यालय</div>
+                    <div>9. ग्रामीण यांत्रिकी सेवा</div>
+                    <div>10. नगरीय प्रशासन विभाग</div>
+                    <div>11. प्रशासन अकादमी</div>
+                    <div>12. मुख्य निर्वाचन कार्यालय</div>
+                    <div>13. लोक निर्माण विभाग (PWD)</div>
+                    <div>14. पाठ्य पुस्तक निगम</div>
+                    <div>15. राजस्व विभाग</div>
+                    <div>16. सड़क विकास निगम</div>
+                    <div>17. म.प्र. पर्यटन बोर्ड</div>
+                    <div>18. जनजातीय कार्य विभाग</div>
+                    <div>19. विपणन संघ</div>
+                    <div>20. वित्त विभाग (मंत्रालय)</div>
+                    <div>21. लोक शिक्षण संचालनालय</div>
+                    <div>22. NVDA प्राधिकरण</div>
+                    <div>23. एड्स नियंत्रण सोसायटी</div>
+                    <div>24. सूचना आयोग</div>
+                    <div>25. सहकारिता विभाग</div>
+                    <div>26. वाल्मी संस्थान</div>
+                    <div>27. हाउसिंग बोर्ड</div>
+                    <div>28. म.प्र. रेरा (RERA)</div>
+                    <div>29. IT कॉर्पोरेशन</div>
+                    <div>30. जनसम्पर्क विभाग</div>
+                    <div>31. स्कूल शिक्षा विभाग</div>
+                    <div>32. स्वास्थ्य मिशन (NHM)</div>
+                    <div>33. पुलिस मुख्यालय</div>
+                    <div>34. सहकारिता भोपाल</div>
+                    <div>35. गैस राहत विभाग</div>
+                    <div>36. कौशल विकास</div>
+                    <div>37. नागरिक आपूर्ति निगम</div>
+                    <div>38. जिला पंचायत</div>
+                    <div>39. सूक्ष्म लघु उद्योग</div>
+                    <div>40. संस्कृति एवं पर्यटन</div>
+                    <div>41. सांची दुग्ध संघ</div>
+                    <div>42. खाद्य विभाग</div>
+                    <div>43. भवन विकास निगम</div>
+                    <div>44. स्वास्थ्य मंत्रालय</div>
+                    <div>45. सामाजिक न्याय विभाग</div>
+                    <div>46. स्वच्छ भारत मिशन</div>
+                    <div>47. म.प्र. मेट्रो रेल</div>
+                </div>
+                <p style="font-size:11px; color:var(--text-sub); margin-top:14px; border-top: 1px solid var(--card-border); padding-top: 8px;">
+                    * एवं अन्य समस्त शासकीय विभाग, निगम, मण्डल एवं चिकित्सालय।
+                </p>
+            </div>
+        </div>
+
+        <div id="tab-why" class="content-view">
+            <div class="info-card">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 style="color: var(--gold-light); font-size: 18px; text-transform: uppercase;">आउटसोर्स कर्मचारी महा-अधिकार मार्गदर्शिका</h2>
+                    <p style="color: var(--text-sub); font-size: 12px;">"संगठन, शक्ति और वैधानिक अधिकारों का संपूर्ण ज्ञान"</p>
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <h4 style="color: var(--gold-light); font-size: 14px; margin-bottom: 6px;">1. संगठन क्यों अनिवार्य है?</h4>
+                    <p style="font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+                        आउटसोर्सिंग प्रथा में अकेला कर्मचारी असहाय होता है। संगठन सामूहिक सौदेबाजी (Collective Bargaining) और सामाजिक व मनोवैज्ञानिक सुरक्षा कवच प्रदान करता है।
+                    </p>
+                </div>
+
+                <div style="background: rgba(34, 197, 94, 0.06); padding: 14px; border-radius: 10px; border-left: 3px solid #22c55e; margin-bottom: 16px;">
+                    <h4 style="color: #22c55e; font-size: 13px; margin-bottom: 4px;">2. समान कार्य, समान वेतन का अधिकार</h4>
+                    <p style="font-size: 12px; color: #e2e8f0;">
+                        सुप्रीम कोर्ट (जगजीत सिंह केस) के अनुसार समान पद व जिम्मेदारी होने पर न्यूनतम वेतनमान मिलना वैधानिक अधिकार है।
+                    </p>
+                </div>
+
+                <div style="background: rgba(239, 68, 68, 0.06); padding: 14px; border-radius: 10px; border-left: 3px solid #ef4444; margin-bottom: 16px;">
+                    <h4 style="color: #ef4444; font-size: 13px; margin-bottom: 4px;">3. Principal Employer (मुख्य नियोक्ता)</h4>
+                    <p style="font-size: 12px; color: #e2e8f0;">
+                        ठेकेदार केवल सप्लायर है। वेतन या पीएफ रुकने पर संबंधित सरकारी विभाग ही समस्त भुगतान के लिए कानूनी रूप से उत्तरदायी है।
+                    </p>
+                </div>
+
+                <div style="overflow-x: auto; margin-top: 10px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">
+                        <tr style="background: rgba(245, 158, 11, 0.15); color: var(--gold-light);">
+                            <th style="padding: 8px; border: 1px solid var(--card-border);">सुविधा</th>
+                            <th style="padding: 8px; border: 1px solid var(--card-border);">आपका अधिकार</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid var(--card-border);">वेतन</td>
+                            <td style="padding: 8px; border: 1px solid var(--card-border);">कलेक्टर दर / न्यूनतम मजदूरी दर</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid var(--card-border);">EPF</td>
+                            <td style="padding: 8px; border: 1px solid var(--card-border);">12% कर्मचारी + 13% नियोक्ता अंशदान</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid var(--card-border);">ESIC / बोनस</td>
+                            <td style="padding: 8px; border: 1px solid var(--card-border);">मुफ्त चिकित्सा व 8.33% वार्षिक बोनस</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="javascript:void(0)" class="nav-link active" onclick="showTab('home', this)">
+            <i class="fas fa-home"></i>HOME
+        </a>
+        <a href="https://uvaaoutsource.blogspot.com/p/singup.html" class="nav-link">
+            <i class="fas fa-user-plus"></i>JOIN
+        </a>
+        <a href="javascript:void(0)" class="nav-link" onclick="showTab('dept', this)">
+            <i class="fas fa-building"></i>DEPTS
+        </a>
+        <a href="https://uvaaoutsource.blogspot.com/p/singin.html" class="nav-link">
+            <i class="fas fa-user-circle"></i>LOGIN
+        </a>
+    </nav>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiZr2tFrPWcsZvKcVp0LbjBpRdgM615b4",
+            authDomain: "uva-outsorce-samajik-kalyan.firebaseapp.com",
+            projectId: "uva-outsorce-samajik-kalyan",
+            storageBucket: "uva-outsorce-samajik-kalyan.firebasestorage.app",
+            messagingSenderId: "1014885936374",
+            appId: "1:1014885936374:web:a669a91286102a315950d7"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Switch View Tabs Function
+        function showTab(tabId, element) {
+            document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+            const target = document.getElementById('tab-' + tabId);
+            if(target) {
+                target.classList.add('active');
+            }
+
+            if(element) {
+                document.querySelectorAll('.bottom-nav .nav-link').forEach(nav => nav.classList.remove('active'));
+                element.classList.add('active');
+            }
+
+            // Smooth scroll to content
+            window.scrollTo({
+                top: 280,
+                behavior: 'smooth'
+            });
+        }
+
+        // Live Real-Time Counter from Firestore
+        db.collection("users").onSnapshot(snap => {
+            const countElem = document.getElementById('member-count');
+            if (countElem) {
+                countElem.innerText = snap.size.toLocaleString('en-IN');
+            }
+        }, error => {
+            console.error("Error loading stats:", error);
+            document.getElementById('member-count').innerText = "10,000+";
+        });
+
+        // WhatsApp Share Link Trigger
+        function shareWeb() {
+            const text = "मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ से जुड़ें और अपनी आवाज बुलंद करें। आज ही सदस्यता लें: " + window.location.href;
+            window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+        }
+    </script>
+</body>
+</html>
