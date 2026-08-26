@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</title>
-    
+
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
     <style>
         :root {
             --bg-main: #f8fafc;
@@ -39,7 +39,7 @@
             padding-bottom: var(--bottom-nav-height);
         }
 
-        /* 1. शीर्ष सूचना पट्टी (Notice Ticker) */
+        /* 1. शीर्ष सूचना पट्टी */
         .top-notice-bar {
             background-color: var(--primary-dark);
             color: #ffffff;
@@ -187,7 +187,7 @@
             cursor: pointer;
         }
 
-        /* 3. मोबाइल साइड ड्रॉअर मेन्यू */
+        /* मोबाइल ड्रॉअर */
         .mobile-drawer {
             position: fixed;
             top: 0;
@@ -234,7 +234,7 @@
         }
         .drawer-links a:hover { background: var(--gold-light); color: var(--gold); }
 
-        /* 4. फ्लोटिंग सोशल मीडिया बार (Scroll Hide/Unhide) */
+        /* 3. फ्लोटिंग सोशल मीडिया बार (Scroll Hide/Unhide) */
         .floating-social-sidebar {
             position: fixed;
             right: 0;
@@ -271,7 +271,7 @@
         .btn-yt { background-color: #cd201f; }
         .btn-wa { background-color: #25d366; }
 
-        /* 5. फुल-स्क्रीन ऑटो स्लाइडर */
+        /* 4. फुल-स्क्रीन ऑटो स्लाइडर */
         .slider-wrapper {
             position: relative;
             width: 100%;
@@ -347,7 +347,7 @@
             border-radius: 5px;
         }
 
-        /* 6. मुख्य कंटेनर */
+        /* 5. मुख्य कंटेनर */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -379,7 +379,7 @@
         .counter-card h2 { font-size: 36px; color: var(--gold); font-weight: 900; }
         .counter-card p { font-size: 14px; color: var(--text-dark); font-weight: 700; }
 
-        /* डायनामिक एक्शन ग्रिड */
+        /* एक्शन ग्रिड */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -485,7 +485,7 @@
             line-height: 1.8;
         }
 
-        /* 7. फोटो व वीडियो गैलरी ग्रिड्स */
+        /* 6. फोटो व वीडियो गैलरी */
         .bottom-gallery {
             background-color: var(--surface);
             padding: 18px;
@@ -526,6 +526,7 @@
             font-weight: 600;
         }
 
+        /* वीडियो कार्ड्स (ऑटो थंबनेल व प्ले बटन) */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -536,16 +537,17 @@
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid var(--border-color);
+            position: relative;
         }
         .video-card iframe {
             width: 100%;
-            height: 160px;
+            height: 180px;
             border: none;
             display: block;
         }
         .video-title {
-            padding: 8px;
-            font-size: 12.5px;
+            padding: 10px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--primary);
             text-align: center;
@@ -571,7 +573,7 @@
             transition: all 0.2s;
         }
 
-        /* 8. मोबाइल बॉटम बार (App-like Bottom Navigation) */
+        /* 7. मोबाइल बॉटम बार */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -639,7 +641,7 @@
             color: #64748b;
         }
 
-        /* मीडिया क्वेरीज़ (Mobile Friendly Breakpoints) */
+        /* रिस्पॉन्सिव स्टाइल */
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .mobile-menu-btn { display: block; }
@@ -673,13 +675,13 @@
         </div>
     </div>
 
-    <!-- 2. फ्लोटिंग सोशल साइडबार -->
+    <!-- 2. फ्लोटिंग सोशल साइडबार (JSON Dynamic) -->
     <div class="floating-social-sidebar" id="socialSidebar">
-        <a href="https://facebook.com" target="_blank" class="social-btn btn-fb"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://x.com" target="_blank" class="social-btn btn-tw"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="https://instagram.com" target="_blank" class="social-btn btn-in"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://youtube.com" target="_blank" class="social-btn btn-yt"><i class="fa-brands fa-youtube"></i></a>
-        <a href="https://whatsapp.com" target="_blank" class="social-btn btn-wa"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#" target="_blank" class="social-btn btn-fb" id="soc-fb"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" target="_blank" class="social-btn btn-tw" id="soc-tw"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" target="_blank" class="social-btn btn-in" id="soc-in"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" target="_blank" class="social-btn btn-yt" id="soc-yt"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" target="_blank" class="social-btn btn-wa" id="soc-wa"><i class="fa-brands fa-whatsapp"></i></a>
     </div>
 
     <!-- 3. नेविगेशन बार -->
@@ -713,6 +715,7 @@
                 <li><a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank">रजिस्ट्रेशन</a></li>
                 <li><a href="https://uvaaoutsource.blogspot.com/p/singin.html" target="_blank">लॉगिन</a></li>
                 <li><a href="#gallery">फोटो गैलरी</a></li>
+                <li><a href="#videos">वीडियो</a></li>
                 <li><a href="admin.html" target="_blank" style="color:var(--gold);"><i class="fas fa-lock"></i> एडमिन</a></li>
             </ul>
         </div>
@@ -763,9 +766,7 @@
         </section>
 
         <!-- डायनामिक एक्शन ग्रिड -->
-        <div class="action-grid" id="dyn-action-grid">
-            <!-- data.json से बटन्स स्वतः लोड होंगे -->
-        </div>
+        <div class="action-grid" id="dyn-action-grid"></div>
 
         <!-- शेयर बटन -->
         <div class="share-strip">
@@ -952,12 +953,38 @@
         let slideInterval;
         let currentSlide = 0;
 
+        // YouTube URL को Embed URL में बदलने का हेल्पर फंक्शन
+        function getYouTubeEmbedUrl(url) {
+            if (!url) return '';
+            let videoId = '';
+            if (url.includes('youtube.com/watch?v=')) {
+                videoId = url.split('v=')[1]?.split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1]?.split('?')[0];
+            } else if (url.includes('youtube.com/shorts/')) {
+                videoId = url.split('shorts/')[1]?.split('?')[0];
+            } else if (url.includes('youtube.com/embed/')) {
+                return url;
+            }
+            return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : url;
+        }
+
         // 1. data.json से डायनामिक डेटा लोड करना
         fetch('data.json')
             .then(res => res.json())
             .then(data => {
                 if (data.notice) document.getElementById('dyn-notice').innerText = data.notice;
                 
+                // सोशल मीडिया लिंक्स
+                if (data.socialLinks) {
+                    if (data.socialLinks.facebook) document.getElementById('soc-fb').href = data.socialLinks.facebook;
+                    if (data.socialLinks.twitter) document.getElementById('soc-tw').href = data.socialLinks.twitter;
+                    if (data.socialLinks.instagram) document.getElementById('soc-in').href = data.socialLinks.instagram;
+                    if (data.socialLinks.youtube) document.getElementById('soc-yt').href = data.socialLinks.youtube;
+                    if (data.socialLinks.whatsapp) document.getElementById('soc-wa').href = data.socialLinks.whatsapp;
+                }
+
+                // लीडर्स जानकारी
                 if (data.leaders) {
                     if (data.leaders.president) {
                         document.getElementById('dyn-pres-name').innerText = data.leaders.president.name;
@@ -1043,14 +1070,15 @@
                     });
                 }
 
-                // वीडियो गैलरी
+                // वीडियो गैलरी (ऑटो एम्बेड कन्वर्टर के साथ)
                 if (data.videos && data.videos.length > 0) {
                     const videoContainer = document.getElementById('dyn-videos-container');
                     videoContainer.innerHTML = '';
                     data.videos.forEach(v => {
+                        const embedLink = getYouTubeEmbedUrl(v.url || v.embedUrl);
                         videoContainer.innerHTML += `
                             <div class="video-card">
-                                <iframe src="${v.embedUrl}" allowfullscreen loading="lazy"></iframe>
+                                <iframe src="${embedLink}" allowfullscreen loading="lazy"></iframe>
                                 <div class="video-title">${v.title}</div>
                             </div>
                         `;
@@ -1114,10 +1142,10 @@
             slider.addEventListener('touchend', e => {
                 let endX = e.changedTouches[0].clientX;
                 if (startX - endX > 50) {
-                    showSlide(currentSlide + 1); // स्वाइप लेफ्ट (Next)
+                    showSlide(currentSlide + 1);
                     initSlider();
                 } else if (endX - startX > 50) {
-                    showSlide(currentSlide - 1); // स्वाइप राइट (Prev)
+                    showSlide(currentSlide - 1);
                     initSlider();
                 }
             }, {passive: true});
@@ -1138,7 +1166,6 @@
                 window.scrollTo({ top: 380, behavior: 'smooth' });
             }
 
-            // बॉटम नेविगेशन एक्टिव क्लास अपडेट
             document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.classList.remove('active'));
             const activeNav = Array.from(document.querySelectorAll('.bottom-nav-item')).find(el => el.getAttribute('onclick')?.includes(id));
             if (activeNav) activeNav.classList.add('active');
