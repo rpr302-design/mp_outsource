@@ -1,5 +1,12 @@
 {
   "notice": "मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ • अपने अधिकारों व सुरक्षित भविष्य के लिए संगठन से जुड़ें • पंजीयन: श्रम विभाग • तकनीकी आईटी टीम प्रबंधन: श्री रोशन प्रजापति",
+  "socialLinks": {
+    "facebook": "https://facebook.com",
+    "twitter": "https://x.com",
+    "instagram": "https://instagram.com",
+    "youtube": "https://youtube.com",
+    "whatsapp": "https://push-notifaction-c3460.web.app/"
+  },
   "leaders": {
     "president": {
       "name": "आशीष सिंह सिसोदिया (अध्यक्ष)",
@@ -54,7 +61,7 @@
     },
     {
       "title": "व्हाट्सएप ग्रुप chat",
-      "icon": "fas fa-sign-in-alt",
+      "icon": "fab fa-whatsapp",
       "link": "https://push-notifaction-c3460.web.app/"
     }
   ],
@@ -209,11 +216,11 @@
   "videos": [
     {
       "title": "भोपाल महाआंदोलन एवं संबोधन",
-      "embedUrl": "https://youtu.be/cZr6KBtRD2M?si=7V4Zuq3en2lYmw29"
+      "embedUrl": "https://www.youtube.com/embed/cZr6KBtRD2M"
     },
     {
       "title": "आउटसोर्स कर्मचारी अधिकार संगोष्ठी",
-      "embedUrl": "https://youtu.be/Qoxsyia1g0M?si=WCoeRu_7Vnx8tw1o"
+      "embedUrl": "https://www.youtube.com/embed/Qoxsyia1g0M"
     }
   ],
   "gallery": [
