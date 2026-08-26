@@ -37,7 +37,7 @@
             line-height: 1.6;
         }
 
-        /* 1. शीर्ष सूचना पट्टी (Overlapping Fixed) */
+        /* 1. शीर्ष सूचना पट्टी */
         .top-notice-bar {
             background-color: var(--primary-dark);
             color: #ffffff;
@@ -177,7 +177,7 @@
         }
         .nav-links li:hover .dropdown-menu { display: block; }
 
-        /* 3. फ्लोटिंग सोशल मीडिया बार (Scroll Hide/Unhide) */
+        /* 3. फ्लोटिंग सोशल बार */
         .floating-social-sidebar {
             position: fixed;
             right: 0;
@@ -215,7 +215,7 @@
         .btn-yt { background-color: #cd201f; }
         .btn-wa { background-color: #25d366; }
 
-        /* 4. फुल-स्क्रीन ऑटो स्लाइडर */
+        /* 4. फुल-स्क्रीन डायनामिक ऑटो स्लाइडर */
         .slider-wrapper {
             position: relative;
             width: 100%;
@@ -321,6 +321,7 @@
         .counter-card h2 { font-size: 40px; color: var(--gold); font-weight: 900; }
         .counter-card p { font-size: 15px; color: var(--text-dark); font-weight: 700; }
 
+        /* डायनामिक एक्शन ग्रिड */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -338,6 +339,10 @@
             text-decoration: none;
             color: var(--text-dark);
             box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .action-card:hover {
             transform: translateY(-3px);
@@ -351,13 +356,13 @@
             display: block;
         }
         .action-card span { font-size: 13.5px; font-weight: 800; text-transform: uppercase; }
-        .btn-register-main {
+        .action-card.btn-gold-card {
             background: var(--gold);
             color: #ffffff;
             border-color: var(--gold);
         }
-        .btn-register-main i { color: #ffffff; }
-        .btn-register-main:hover { background: #b45309; color: #ffffff; }
+        .action-card.btn-gold-card i { color: #ffffff; }
+        .action-card.btn-gold-card:hover { background: #b45309; color: #ffffff; }
 
         .share-strip { margin-bottom: 30px; }
         .btn-share {
@@ -422,6 +427,7 @@
             line-height: 1.9;
         }
 
+        /* 5. फोटो व वीडियो गैलरी */
         .bottom-gallery {
             background-color: var(--surface);
             padding: 24px;
@@ -461,6 +467,58 @@
             padding: 6px 10px;
             text-align: center;
             font-weight: 600;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .video-card {
+            background: var(--bg-main);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .video-card iframe {
+            width: 100%;
+            height: 180px;
+            border: none;
+            display: block;
+        }
+        .video-title {
+            padding: 10px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        /* 6. महत्वपूर्ण लिंक्स ग्रिड */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+        .custom-link-btn {
+            background: var(--bg-main);
+            padding: 12px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .custom-link-btn:hover {
+            background: var(--gold-light);
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-2px);
         }
 
         footer {
@@ -563,12 +621,13 @@
                 <li><a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank">नया रजिस्ट्रेशन</a></li>
                 <li><a href="https://uvaaoutsource.blogspot.com/p/singin.html" target="_blank">लॉगिन</a></li>
                 <li><a href="#gallery">फोटो गैलरी</a></li>
+                <li><a href="#videos">वीडियो</a></li>
             </ul>
         </div>
     </header>
 
-    <!-- 4. फुल-स्क्रीन ऑटो स्लाइडर -->
-    <section class="slider-wrapper">
+    <!-- 4. फुल-स्क्रीन ऑटो स्लाइडर (Dynamic via JSON) -->
+    <section class="slider-wrapper" id="dyn-slider-wrapper">
         <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80');">
             <div class="slide-content">
                 <h2>मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</h2>
@@ -581,16 +640,9 @@
                 <p>संविधान और माननीय सर्वोच्च न्यायालय द्वारा प्रदत्त वैधानिक अधिकारों की सुरक्षा</p>
             </div>
         </div>
-        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1600&q=80');">
-            <div class="slide-content">
-                <h2>47+ शासकीय विभागों का एकीकरण</h2>
-                <p>मध्य प्रदेश के समस्त शासकीय विभागों में कार्यरत कर्मचारियों की एकजुट आवाज</p>
-            </div>
-        </div>
-        <div class="slide-dots">
+        <div class="slide-dots" id="dyn-slider-dots">
             <span class="dot active" onclick="setSlide(0)"></span>
             <span class="dot" onclick="setSlide(1)"></span>
-            <span class="dot" onclick="setSlide(2)"></span>
         </div>
     </section>
 
@@ -608,9 +660,9 @@
             </div>
         </section>
 
-        <!-- एक्शन ग्रिड -->
-        <div class="action-grid">
-            <a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank" class="action-card btn-register-main">
+        <!-- डायनामिक एक्शन ग्रिड (बटन्स via JSON) -->
+        <div class="action-grid" id="dyn-action-grid">
+            <a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank" class="action-card btn-gold-card">
                 <i class="fas fa-user-plus"></i><span>नया रजिस्ट्रेशन (Join Us)</span>
             </a>
             <div class="action-card" onclick="showTab('committee')">
@@ -653,26 +705,28 @@
         <div id="tab-committee" class="content-view">
             <div class="info-card">
                 <h3>मुख्य पदाधिकारी एवं सदस्य सूची</h3>
-                <div class="list-row"><span>1. श्री आशीष सिंह सिसोदिया</span><b>अध्यक्ष</b></div>
-                <div class="list-row"><span>2. श्री प्रकाश पुंज चौधरी</span><b>कार्यकारी अध्यक्ष</b></div>
-                <div class="list-row"><span>3. श्री अखिलेश श्रीवास्तव</span><b>उपाध्यक्ष</b></div>
-                <div class="list-row"><span>4. श्री सुनील शर्मा</span><b>उपाध्यक्ष</b></div>
-                <div class="list-row"><span>5. श्री अनिरुद्ध सिंह कुशवाहा</span><b>उपाध्यक्ष</b></div>
-                <div class="list-row"><span>6. श्री राहुल सक्सेना</span><b>संयुक्त महामंत्री</b></div>
-                <div class="list-row"><span>7. श्रीमती रीना राठौर</span><b>कोषाध्यक्ष</b></div>
-                <div class="list-row"><span>8. श्रीमती विमला तिवारी</span><b>प्रदेशाध्यक्ष महिला प्रकोष्ठ</b></div>
-                <div class="list-row"><span>9. श्री विनेन्द्र सिंह</span><b>संगठन मंत्री</b></div>
-                <div class="list-row"><span>10. श्री गुलशन मंसूरी</span><b>प्रदेश मंत्री</b></div>
-                <div class="list-row"><span>11. श्री दिनेश कुमार यदुवंशी</span><b>प्रदेश मंत्री</b></div>
-                <div class="list-row"><span>12. श्री नरेंद्र वर्मा</span><b>कार्यालय मंत्री</b></div>
-                <div class="list-row"><span>13. श्री पंकज पटेल</span><b>सदस्य</b></div>
-                <div class="list-row"><span>14. श्री हीरा लाल प्रजापति</span><b>सदस्य</b></div>
-                <div class="list-row"><span>15. श्री अरविंद कुमार अहिरवार</span><b>सदस्य</b></div>
-                <div class="list-row"><span>16. श्री जय प्रकाश नापित</span><b>सदस्य</b></div>
-                <div class="list-row"><span>17. श्री किशोर मालवीय</span><b>सदस्य</b></div>
-                <div class="list-row"><span>18. श्री नीतेश दोगुने</span><b>सदस्य</b></div>
-                <div class="list-row"><span>19. श्री वीरेंद्र कुमार मलैया</span><b>सदस्य</b></div>
-                <div class="list-row"><span>20. श्री प्रकाश मालवीय</span><b>सदस्य</b></div>
+                <div id="dyn-committee-list">
+                    <div class="list-row"><span>1. श्री आशीष सिंह सिसोदिया</span><b>अध्यक्ष</b></div>
+                    <div class="list-row"><span>2. श्री प्रकाश पुंज चौधरी</span><b>कार्यकारी अध्यक्ष</b></div>
+                    <div class="list-row"><span>3. श्री अखिलेश श्रीवास्तव</span><b>उपाध्यक्ष</b></div>
+                    <div class="list-row"><span>4. श्री सुनील शर्मा</span><b>उपाध्यक्ष</b></div>
+                    <div class="list-row"><span>5. श्री अनिरुद्ध सिंह कुशवाहा</span><b>उपाध्यक्ष</b></div>
+                    <div class="list-row"><span>6. श्री राहुल सक्सेना</span><b>संयुक्त महामंत्री</b></div>
+                    <div class="list-row"><span>7. श्रीमती रीना राठौर</span><b>कोषाध्यक्ष</b></div>
+                    <div class="list-row"><span>8. श्रीमती विमला तिवारी</span><b>प्रदेशाध्यक्ष महिला प्रकोष्ठ</b></div>
+                    <div class="list-row"><span>9. श्री विनेन्द्र सिंह</span><b>संगठन मंत्री</b></div>
+                    <div class="list-row"><span>10. श्री गुलशन मंसूरी</span><b>प्रदेश मंत्री</b></div>
+                    <div class="list-row"><span>11. श्री दिनेश कुमार यदुवंशी</span><b>प्रदेश मंत्री</b></div>
+                    <div class="list-row"><span>12. श्री नरेंद्र वर्मा</span><b>कार्यालय मंत्री</b></div>
+                    <div class="list-row"><span>13. श्री पंकज पटेल</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>14. श्री हीरा लाल प्रजापति</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>15. श्री अरविंद कुमार अहिरवार</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>16. श्री जय प्रकाश नापित</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>17. श्री किशोर मालवीय</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>18. श्री नीतेश दोगुने</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>19. श्री वीरेंद्र कुमार मलैया</span><b>सदस्य</b></div>
+                    <div class="list-row"><span>20. श्री प्रकाश मालवीय</span><b>सदस्य</b></div>
+                </div>
                 <div class="list-row" style="border-top: 2px solid var(--gold); margin-top: 12px; padding-top: 12px;">
                     <span>श्री रोशन प्रजापति</span><b>तकनीकी आईटी टीम प्रबंधन</b>
                 </div>
@@ -791,29 +845,38 @@
             </div>
         </div>
 
-        <!-- 5. नीचे फोटो गैलरी (Dynamic JSON Loaded) -->
+        <!-- 5. महत्वपूर्ण लिंक्स एवं शासनादेश (Dynamic via JSON) -->
+        <section class="bottom-gallery" id="links-sec">
+            <h3 style="color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 16px;">
+                <i class="fas fa-link"></i> महत्वपूर्ण लिंक्स एवं डाउनलोड्स
+            </h3>
+            <div class="links-grid" id="dyn-links-container">
+                <!-- JSON से लिंक लोड होंगे -->
+            </div>
+        </section>
+
+        <!-- 6. वीडियो गैलरी (Dynamic via JSON) -->
+        <section class="bottom-gallery" id="videos">
+            <h3 style="color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 16px;">
+                <i class="fas fa-video"></i> वीडियो गैलरी एवं सभाएं
+            </h3>
+            <div class="video-grid" id="dyn-videos-container">
+                <!-- JSON से वीडियो लोड होंगे -->
+            </div>
+        </section>
+
+        <!-- 7. फोटो गैलरी (Dynamic via JSON) -->
         <section class="bottom-gallery" id="gallery">
             <h3 style="color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 8px; margin-bottom: 16px;">
-                फोटो गैलरी एवं संगठनात्मक गतिविधियां
+                <i class="fas fa-images"></i> फोटो गैलरी एवं संगठनात्मक गतिविधियां
             </h3>
             <div class="gallery-grid" id="dyn-gallery-container">
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1544928147-79a2dbc1f389?auto=format&fit=crop&w=500&q=80" alt="बैठक">
-                    <div class="gallery-caption">प्रांतीय बैठक</div>
-                </div>
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=500&q=80" alt="मांग पत्र">
-                    <div class="gallery-caption">अधिकार मांग पत्र</div>
-                </div>
-                <div class="gallery-card">
-                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=500&q=80" alt="सम्मेलन">
-                    <div class="gallery-caption">कर्मचारी महासम्मेलन</div>
-                </div>
+                <!-- JSON से फोटो लोड होंगी -->
             </div>
         </section>
     </main>
 
-    <!-- 6. फुटर -->
+    <!-- 8. फुटर -->
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -859,11 +922,17 @@
 
     <!-- डेटा फेचिंग (JSON) एवं इंटरएक्टिव लॉजिक -->
     <script>
-        // 1. data.json से 0-कॉस्ट डेटा लोड करना
+        let slideInterval;
+        let currentSlide = 0;
+
+        // 1. data.json से सम्पूर्ण डायनामिक डेटा लोड करना
         fetch('data.json')
             .then(res => res.json())
             .then(data => {
+                // सूचना टिकर
                 if (data.notice) document.getElementById('dyn-notice').innerText = data.notice;
+                
+                // लीडर्स जानकारी
                 if (data.leaders) {
                     if (data.leaders.president) {
                         document.getElementById('dyn-pres-name').innerText = data.leaders.president.name;
@@ -877,7 +946,77 @@
                 if (data.memberCount) document.getElementById('member-count').innerText = data.memberCount;
                 if (data.goalText) document.getElementById('dyn-goal-text').innerText = data.goalText;
 
-                // फोटो गैलरी रेंडरिंग
+                // 2. डायनामिक स्लाइडर रेंडरिंग
+                if (data.slider && data.slider.length > 0) {
+                    const sliderWrapper = document.getElementById('dyn-slider-wrapper');
+                    const dotsWrapper = document.getElementById('dyn-slider-dots');
+                    sliderWrapper.innerHTML = '';
+                    let dotsHTML = '<div class="slide-dots" id="dyn-slider-dots">';
+
+                    data.slider.forEach((s, idx) => {
+                        sliderWrapper.innerHTML += `
+                            <div class="slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${s.image}');">
+                                <div class="slide-content">
+                                    <h2>${s.title}</h2>
+                                    <p>${s.subtitle || ''}</p>
+                                </div>
+                            </div>
+                        `;
+                        dotsHTML += `<span class="dot ${idx === 0 ? 'active' : ''}" onclick="setSlide(${idx})"></span>`;
+                    });
+                    dotsHTML += '</div>';
+                    sliderWrapper.innerHTML += dotsHTML;
+                    initSlider();
+                }
+
+                // 3. डायनामिक एक्शन ग्रिड बटन्स
+                if (data.actionButtons && data.actionButtons.length > 0) {
+                    const actionGrid = document.getElementById('dyn-action-grid');
+                    actionGrid.innerHTML = '';
+                    data.actionButtons.forEach(btn => {
+                        const isExternal = btn.link.startsWith('http');
+                        const isTab = btn.tab ? `onclick="showTab('${btn.tab}')"` : '';
+                        const href = isExternal ? `href="${btn.link}" target="_blank"` : `href="javascript:void(0)"`;
+                        const goldClass = btn.isGold ? 'btn-gold-card' : '';
+
+                        actionGrid.innerHTML += `
+                            <a ${href} ${isTab} class="action-card ${goldClass}">
+                                <i class="${btn.icon || 'fas fa-arrow-right'}"></i>
+                                <span>${btn.title}</span>
+                            </a>
+                        `;
+                    });
+                }
+
+                // 4. डायनामिक लिंक्स व डाउनलोड्स
+                if (data.importantLinks && data.importantLinks.length > 0) {
+                    const linksContainer = document.getElementById('dyn-links-container');
+                    linksContainer.innerHTML = '';
+                    data.importantLinks.forEach(l => {
+                        linksContainer.innerHTML += `
+                            <a href="${l.url}" target="_blank" class="custom-link-btn">
+                                <i class="${l.icon || 'fas fa-file-pdf'}"></i>
+                                <span>${l.title}</span>
+                            </a>
+                        `;
+                    });
+                }
+
+                // 5. डायनामिक वीडियो गैलरी
+                if (data.videos && data.videos.length > 0) {
+                    const videoContainer = document.getElementById('dyn-videos-container');
+                    videoContainer.innerHTML = '';
+                    data.videos.forEach(v => {
+                        videoContainer.innerHTML += `
+                            <div class="video-card">
+                                <iframe src="${v.embedUrl}" allowfullscreen></iframe>
+                                <div class="video-title">${v.title}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // 6. डायनामिक फोटो गैलरी
                 if (data.gallery && data.gallery.length > 0) {
                     const galleryContainer = document.getElementById('dyn-gallery-container');
                     galleryContainer.innerHTML = '';
@@ -891,36 +1030,40 @@
                     });
                 }
             })
-            .catch(err => console.log("Default HTML Data in use:", err));
+            .catch(err => {
+                console.log("JSON Load Error or using local structure:", err);
+                initSlider();
+            });
 
-        // 2. ऑटो स्लाइडर लॉजिक
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        let slideInterval;
-
-        function showSlide(index) {
-            slides.forEach(s => s.classList.remove('active'));
-            dots.forEach(d => d.classList.remove('active'));
-            currentSlide = (index + slides.length) % slides.length;
-            slides[currentSlide].classList.add('active');
-            dots[currentSlide].classList.add('active');
-        }
-
-        function setSlide(index) {
-            showSlide(index);
+        // ऑटो स्लाइडर इंजन
+        function initSlider() {
             clearInterval(slideInterval);
-            startSlideTimer();
-        }
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if (slides.length <= 1) return;
 
-        function startSlideTimer() {
             slideInterval = setInterval(() => {
                 showSlide(currentSlide + 1);
             }, 5000);
         }
-        startSlideTimer();
 
-        // 3. टैब स्विचिंग फंक्शन
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if(slides.length === 0) return;
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            if(dots[currentSlide]) dots[currentSlide].classList.add('active');
+        }
+
+        function setSlide(index) {
+            showSlide(index);
+            initSlider();
+        }
+
+        // टैब स्विचिंग फंक्शन
         function showTab(id) {
             document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById('tab-' + id);
@@ -930,13 +1073,13 @@
             }
         }
 
-        // 4. व्हाट्सएप शेयर
+        // व्हाट्सएप शेयर
         function shareWeb() {
             const text = "मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ से जुड़ें। रजिस्टर करें: " + window.location.href;
             window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
         }
 
-        // 5. फ्लोटिंग सोशल साइडबार स्क्रॉल हाइड/शो
+        // फ्लोटिंग साइडबार स्क्रॉल हाइड/शो
         let lastScrollTop = 0;
         const socialSidebar = document.getElementById('socialSidebar');
         window.addEventListener('scroll', function() {
