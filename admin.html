@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>संपूर्ण पोर्टल एडमिन कंट्रोल पैनल - GitHub API</title>
+    <title>मास्टर एडमिन कंट्रोल पैनल - MP आउटसोर्स संघ</title>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -31,7 +31,7 @@
         body {
             background-color: var(--bg);
             color: var(--text);
-            padding: 25px 15px;
+            padding: 20px 12px;
             line-height: 1.5;
         }
 
@@ -43,30 +43,30 @@
         .header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
-            padding: 25px 20px;
+            padding: 24px 18px;
             border-radius: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 22px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             border-bottom: 3px solid var(--gold);
         }
         .header h1 {
-            font-size: 22px;
+            font-size: 21px;
             color: #fef08a;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .card {
             background: var(--card);
-            padding: 24px;
+            padding: 22px 18px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            margin-bottom: 25px;
+            margin-bottom: 22px;
             border: 1px solid var(--border);
         }
         .card h2 {
-            font-size: 17px;
-            margin-bottom: 18px;
+            font-size: 16.5px;
+            margin-bottom: 16px;
             color: var(--primary);
             border-bottom: 2px solid var(--gold);
             padding-bottom: 8px;
@@ -76,13 +76,13 @@
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 15px;
         }
         .form-group label {
             display: block;
             font-weight: 700;
-            margin-bottom: 6px;
-            font-size: 13.5px;
+            margin-bottom: 5px;
+            font-size: 13px;
             color: #334155;
         }
         .form-control {
@@ -90,7 +90,7 @@
             padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13.5px;
             color: var(--text);
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
@@ -101,26 +101,21 @@
         }
         textarea.form-control {
             resize: vertical;
-            min-height: 85px;
+            min-height: 80px;
         }
 
         .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
+            gap: 14px;
         }
 
         .btn {
-            padding: 11px 22px;
+            padding: 10px 20px;
             border: none;
             border-radius: 6px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13.5px;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
@@ -137,10 +132,10 @@
         .btn-danger:hover { background: #b91c1c; }
 
         .status-msg {
-            padding: 14px 18px;
+            padding: 12px 16px;
             border-radius: 8px;
-            margin-bottom: 22px;
-            font-size: 14.5px;
+            margin-bottom: 20px;
+            font-size: 14px;
             font-weight: 600;
             display: none;
             box-shadow: 0 2px 6px rgba(0,0,0,0.04);
@@ -165,9 +160,9 @@
 
         .gallery-admin-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 14px;
         }
         .gallery-admin-card {
             border: 1px solid var(--border);
@@ -179,13 +174,13 @@
         }
         .gallery-admin-card img {
             width: 100%;
-            height: 110px;
+            height: 100px;
             object-fit: cover;
             display: block;
         }
         .gallery-admin-card p {
-            font-size: 12px;
-            padding: 6px 8px;
+            font-size: 11.5px;
+            padding: 6px;
             font-weight: 700;
             text-align: center;
             color: #334155;
@@ -213,14 +208,14 @@
         }
         .login-box {
             background: #fff;
-            padding: 35px 25px;
+            padding: 30px 22px;
             border-radius: 12px;
-            width: 320px;
+            width: 310px;
             text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .login-box h3 {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: var(--primary);
         }
 
@@ -232,12 +227,12 @@
 </head>
 <body>
 
-    <!-- लॉगिन स्क्रीन -->
+    <!-- पासवर्ड सुरक्षा स्क्रीन (Password: admin123) -->
     <div id="login-screen">
         <div class="login-box">
             <h3><i class="fas fa-lock"></i> एडमिन लॉगिन</h3>
-            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 15px;">मास्टर एडमिन पैनल हेतु पासवर्ड डालें</p>
-            <input type="password" id="admin-pass" class="form-control" placeholder="पासवर्ड दर्ज करें" style="margin-bottom: 15px;">
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 14px;">पोर्टल प्रबंधन हेतु पासवर्ड दर्ज करें</p>
+            <input type="password" id="admin-pass" class="form-control" placeholder="पासवर्ड दर्ज करें" style="margin-bottom: 14px;">
             <button class="btn btn-gold" style="width: 100%;" onclick="checkAuth()"><i class="fas fa-sign-in-alt"></i> लॉगिन करें</button>
         </div>
     </div>
@@ -246,17 +241,17 @@
     <div class="admin-container" id="admin-panel" style="display: none;">
         <div class="header">
             <h1><i class="fab fa-github"></i> मास्टर एडमिन कंट्रोल पैनल</h1>
-            <p style="font-size: 13.5px; opacity: 0.9;">पोर्टल का संपूर्ण डेटा (सूचना, पदाधिकारी, विभाग, नियम, गैलरी आदि) एक क्लिक में अपडेट करें</p>
+            <p style="font-size: 13px; opacity: 0.9;">पोर्टल का संपूर्ण डेटा (सूचना, पदाधिकारी, विभाग, लिंक्स, वीडियो आदि) यहीं से अपडेट करें</p>
         </div>
 
         <div id="status-box" class="status-msg"></div>
 
         <!-- 1. GitHub API क्रेडेंशियल्स -->
         <div class="card">
-            <h2><i class="fas fa-cog"></i> 1. GitHub रिपॉजिटरी कनेक्शन</h2>
+            <h2><i class="fas fa-cog"></i> 1. GitHub रिपॉजिटरी सेटिंग्स (One-Time Setup)</h2>
             <div class="grid-2">
                 <div class="form-group">
-                    <label>GitHub यूज़रनेम (Username):</label>
+                    <label>GitHub यूज़रनेम (Owner):</label>
                     <input type="text" id="gh-owner" class="form-control" value="rpr302-design">
                 </div>
                 <div class="form-group">
@@ -272,12 +267,39 @@
                     <input type="password" id="gh-token" class="form-control" placeholder="ghp_xxxxxxxxxxxx">
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="loadFromGitHub()"><i class="fas fa-sync-alt"></i> GitHub से वर्तमान संपूर्ण डेटा लोड करें</button>
+            <button class="btn btn-primary" onclick="loadFromGitHub()"><i class="fas fa-sync-alt"></i> GitHub से वर्तमान डेटा लोड करें</button>
         </div>
 
-        <!-- 2. मुख्य सूचना, लीडर्स व लक्ष्य -->
+        <!-- 2. सोशल मीडिया लिंक्स -->
         <div class="card">
-            <h2><i class="fas fa-bullhorn"></i> 2. सामान्य जानकारी, लीडर्स व काउंटर</h2>
+            <h2><i class="fas fa-share-alt"></i> 2. सोशल मीडिया लिंक्स (Social Media Links)</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label><i class="fab fa-facebook" style="color:#1877f2;"></i> Facebook लिंक:</label>
+                    <input type="text" id="soc-fb" class="form-control" placeholder="https://facebook.com/...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fab fa-x-twitter"></i> Twitter/X लिंक:</label>
+                    <input type="text" id="soc-tw" class="form-control" placeholder="https://x.com/...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fab fa-instagram" style="color:#e4405f;"></i> Instagram लिंक:</label>
+                    <input type="text" id="soc-in" class="form-control" placeholder="https://instagram.com/...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fab fa-youtube" style="color:#cd201f;"></i> YouTube चैनल लिंक:</label>
+                    <input type="text" id="soc-yt" class="form-control" placeholder="https://youtube.com/@...">
+                </div>
+                <div class="form-group" style="grid-column: span 2;">
+                    <label><i class="fab fa-whatsapp" style="color:#25d366;"></i> WhatsApp ग्रुप/चैट लिंक:</label>
+                    <input type="text" id="soc-wa" class="form-control" placeholder="https://chat.whatsapp.com/... या https://wa.me/...">
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. मुख्य सूचना, लीडर्स व लक्ष्य -->
+        <div class="card">
+            <h2><i class="fas fa-bullhorn"></i> 3. सामान्य जानकारी, लीडर्स व काउंटर</h2>
             <div class="form-group">
                 <label>शीर्ष सूचना टिकर (Top Notice Text):</label>
                 <textarea id="inp-notice" class="form-control"></textarea>
@@ -314,53 +336,54 @@
             </div>
         </div>
 
-        <!-- 3. स्लाइडर प्रबंधन -->
+        <!-- 4. होम स्लाइडर -->
         <div class="card">
-            <h2><i class="fas fa-sliders-h"></i> 3. होम स्लाइडर (Banners)</h2>
+            <h2><i class="fas fa-sliders-h"></i> 4. होम स्लाइडर (Banners)</h2>
             <div id="slider-list-container"></div>
             <button class="btn btn-primary" style="margin-top: 10px;" onclick="addSliderItem()"><i class="fas fa-plus"></i> नई स्लाइड जोड़ें</button>
         </div>
 
-        <!-- 4. एक्शन ग्रिड बटन्स -->
+        <!-- 5. एक्शन ग्रिड बटन्स -->
         <div class="card">
-            <h2><i class="fas fa-th-large"></i> 4. मुख्य एक्शन बटन्स (Quick Grid)</h2>
+            <h2><i class="fas fa-th-large"></i> 5. मुख्य एक्शन बटन्स (Quick Action Grid)</h2>
             <div id="action-btn-container"></div>
             <button class="btn btn-primary" style="margin-top: 10px;" onclick="addActionButton()"><i class="fas fa-plus"></i> नया बटन जोड़ें</button>
         </div>
 
-        <!-- 5. पदाधिकारी सूची -->
+        <!-- 6. पदाधिकारी सूची -->
         <div class="card">
-            <h2><i class="fas fa-users"></i> 5. मुख्य पदाधिकारी एवं सदस्य सूची</h2>
+            <h2><i class="fas fa-users"></i> 6. मुख्य पदाधिकारी एवं सदस्य सूची</h2>
             <div id="committee-list-container"></div>
             <button class="btn btn-primary" style="margin-top: 10px;" onclick="addCommitteeMember()"><i class="fas fa-user-plus"></i> नया पदाधिकारी जोड़ें</button>
         </div>
 
-        <!-- 6. विभाग सूची -->
+        <!-- 7. विभाग सूची -->
         <div class="card">
-            <h2><i class="fas fa-building"></i> 6. संबद्ध शासकीय विभाग सूची</h2>
+            <h2><i class="fas fa-building"></i> 7. संबद्ध शासकीय विभाग सूची (47+ विभाग)</h2>
             <div class="form-group">
-                <label>विभागों के नाम (प्रत्येक विभाग नई लाइन में लिखें):</label>
+                <label>प्रत्येक विभाग नई लाइन में दर्ज करें:</label>
                 <textarea id="inp-departments" class="form-control" style="min-height: 180px;"></textarea>
             </div>
         </div>
 
-        <!-- 7. महत्वपूर्ण लिंक्स एवं डाउनलोड्स -->
+        <!-- 8. महत्वपूर्ण लिंक्स एवं डाउनलोड्स -->
         <div class="card">
-            <h2><i class="fas fa-link"></i> 7. महत्वपूर्ण लिंक्स एवं डाउनलोड्स (PDFs/Forms)</h2>
+            <h2><i class="fas fa-link"></i> 8. महत्वपूर्ण लिंक्स एवं डाउनलोड्स (PDFs/Forms)</h2>
             <div id="links-list-container"></div>
             <button class="btn btn-primary" style="margin-top: 10px;" onclick="addLinkItem()"><i class="fas fa-plus"></i> नया लिंक जोड़ें</button>
         </div>
 
-        <!-- 8. वीडियो गैलरी -->
+        <!-- 9. वीडियो गैलरी -->
         <div class="card">
-            <h2><i class="fas fa-video"></i> 8. वीडियो गैलरी</h2>
+            <h2><i class="fas fa-video"></i> 9. वीडियो गैलरी (YouTube Videos)</h2>
+            <p style="font-size:12px; color:#64748b; margin-bottom:10px;">नोट: आप कोई भी सामान्य YouTube लिंक (उदा. https://youtu.be/... या watch?v=...) डाल सकते हैं, यह अपने-आप सही फॉर्मेट में कन्वर्ट हो जाएगा।</p>
             <div id="videos-list-container"></div>
             <button class="btn btn-primary" style="margin-top: 10px;" onclick="addVideoItem()"><i class="fas fa-plus"></i> नया वीडियो जोड़ें</button>
         </div>
 
-        <!-- 9. फोटो गैलरी -->
+        <!-- 10. फोटो गैलरी -->
         <div class="card">
-            <h2><i class="fas fa-images"></i> 9. फोटो गैलरी</h2>
+            <h2><i class="fas fa-images"></i> 10. फोटो गैलरी</h2>
             <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: flex-end;">
                 <div class="form-group" style="margin: 0;">
                     <label>फोटो का डायरेक्ट URL:</label>
@@ -368,16 +391,16 @@
                 </div>
                 <div class="form-group" style="margin: 0;">
                     <label>कैप्शन / विवरण:</label>
-                    <input type="text" id="inp-img-title" class="form-control" placeholder="उदा. महासम्मेलन">
+                    <input type="text" id="inp-img-title" class="form-control" placeholder="उदा. प्रांतीय बैठक">
                 </div>
                 <button class="btn btn-gold" onclick="addPhoto()"><i class="fas fa-plus"></i> जोड़ें</button>
             </div>
             <div class="gallery-admin-grid" id="admin-gallery-list"></div>
         </div>
 
-        <!-- 10. फाइनल सेव बटन -->
+        <!-- 11. फाइनल सेव बटन -->
         <div style="text-align: center; margin-bottom: 50px;">
-            <button class="btn btn-gold" style="padding: 16px 45px; font-size: 17px;" onclick="saveAllToGitHub()">
+            <button class="btn btn-gold" style="padding: 15px 40px; font-size: 16px;" onclick="saveAllToGitHub()">
                 <i class="fas fa-cloud-upload-alt"></i> संपूर्ण डेटा GitHub पर सेव व लाइव करें
             </button>
         </div>
@@ -386,6 +409,7 @@
     <script>
         let currentSHA = null;
         let masterData = {
+            socialLinks: {},
             slider: [],
             actionButtons: [],
             committee: [],
@@ -394,6 +418,22 @@
             gallery: []
         };
 
+        // YouTube URL को Embed URL में बदलने का हेल्पर फंक्शन
+        function formatYouTubeEmbed(url) {
+            if (!url) return '';
+            let videoId = '';
+            if (url.includes('youtube.com/watch?v=')) {
+                videoId = url.split('v=')[1]?.split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1]?.split('?')[0];
+            } else if (url.includes('youtube.com/shorts/')) {
+                videoId = url.split('shorts/')[1]?.split('?')[0];
+            } else if (url.includes('youtube.com/embed/')) {
+                return url;
+            }
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+        }
+
         function checkAuth() {
             const pass = document.getElementById('admin-pass').value;
             if (pass === "admin123") {
@@ -401,7 +441,7 @@
                 document.getElementById('admin-panel').style.display = 'block';
                 initSavedConfig();
             } else {
-                alert("गलत पासवर्ड! कृपया सही पासवर्ड डालें।");
+                alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
             }
         }
 
@@ -424,7 +464,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 1. GitHub API से सम्पूर्ण data.json लोड करना
+        // 1. GitHub API से data.json लोड करना
         async function loadFromGitHub() {
             const owner = document.getElementById('gh-owner').value.trim();
             const repo = document.getElementById('gh-repo').value.trim();
@@ -454,7 +494,16 @@
                 const content = decodeURIComponent(escape(atob(fileData.content)));
                 const json = JSON.parse(content);
 
-                // फॉर्म में मान सेट करना
+                // सोशल मीडिया लिंक्स
+                if (json.socialLinks) {
+                    document.getElementById('soc-fb').value = json.socialLinks.facebook || '';
+                    document.getElementById('soc-tw').value = json.socialLinks.twitter || '';
+                    document.getElementById('soc-in').value = json.socialLinks.instagram || '';
+                    document.getElementById('soc-yt').value = json.socialLinks.youtube || '';
+                    document.getElementById('soc-wa').value = json.socialLinks.whatsapp || '';
+                }
+
+                // सामान्य जानकारी
                 document.getElementById('inp-notice').value = json.notice || '';
                 if (json.leaders) {
                     document.getElementById('inp-pres-name').value = json.leaders.president?.name || '';
@@ -466,7 +515,7 @@
                 document.getElementById('inp-goal-text').value = json.goalText || '';
                 document.getElementById('inp-it-head').value = json.itHead || 'श्री रोशन प्रजापति';
 
-                // विभाग सूची
+                // विभाग
                 if (json.departments) {
                     document.getElementById('inp-departments').value = json.departments.join('\n');
                 }
@@ -485,7 +534,6 @@
             }
         }
 
-        // सभी डायनामिक सेक्शन्स रेंडर करना
         function renderAllDynamicSections() {
             renderSliders();
             renderActionButtons();
@@ -495,7 +543,7 @@
             renderGallery();
         }
 
-        // स्लाइडर रेंडर
+        // स्लाइडर
         function renderSliders() {
             const container = document.getElementById('slider-list-container');
             container.innerHTML = '';
@@ -515,7 +563,7 @@
             renderSliders();
         }
 
-        // एक्शन बटन्स रेंडर
+        // एक्शन बटन्स
         function renderActionButtons() {
             const container = document.getElementById('action-btn-container');
             container.innerHTML = '';
@@ -535,15 +583,15 @@
             renderActionButtons();
         }
 
-        // पदाधिकारी रेंडर
+        // पदाधिकारी
         function renderCommittee() {
             const container = document.getElementById('committee-list-container');
             container.innerHTML = '';
             masterData.committee.forEach((c, idx) => {
                 container.innerHTML += `
                     <div class="dynamic-item-row">
-                        <input type="text" class="form-control" style="flex:2;" placeholder="नाम (उदा. श्री आशीष सिंह)" value="${c.name}" onchange="masterData.committee[${idx}].name = this.value">
-                        <input type="text" class="form-control" style="flex:1.5;" placeholder="पद (उदा. अध्यक्ष)" value="${c.role}" onchange="masterData.committee[${idx}].role = this.value">
+                        <input type="text" class="form-control" style="flex:2;" placeholder="नाम" value="${c.name}" onchange="masterData.committee[${idx}].name = this.value">
+                        <input type="text" class="form-control" style="flex:1.5;" placeholder="पद" value="${c.role}" onchange="masterData.committee[${idx}].role = this.value">
                         <button class="btn btn-danger" onclick="masterData.committee.splice(${idx}, 1); renderCommittee();"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
@@ -554,14 +602,14 @@
             renderCommittee();
         }
 
-        // लिंक्स रेंडर
+        // लिंक्स
         function renderLinks() {
             const container = document.getElementById('links-list-container');
             container.innerHTML = '';
             masterData.importantLinks.forEach((l, idx) => {
                 container.innerHTML += `
                     <div class="dynamic-item-row">
-                        <input type="text" class="form-control" style="flex:2;" placeholder="शीर्षक (उदा. आदेश PDF)" value="${l.title}" onchange="masterData.importantLinks[${idx}].title = this.value">
+                        <input type="text" class="form-control" style="flex:2;" placeholder="शीर्षक" value="${l.title}" onchange="masterData.importantLinks[${idx}].title = this.value">
                         <input type="text" class="form-control" style="flex:2.5;" placeholder="URL लिंक" value="${l.url}" onchange="masterData.importantLinks[${idx}].url = this.value">
                         <input type="text" class="form-control" style="flex:1;" placeholder="आइकन" value="${l.icon || 'fas fa-file-pdf'}" onchange="masterData.importantLinks[${idx}].icon = this.value">
                         <button class="btn btn-danger" onclick="masterData.importantLinks.splice(${idx}, 1); renderLinks();"><i class="fas fa-trash"></i></button>
@@ -574,7 +622,7 @@
             renderLinks();
         }
 
-        // वीडियो रेंडर
+        // वीडियो
         function renderVideos() {
             const container = document.getElementById('videos-list-container');
             container.innerHTML = '';
@@ -582,7 +630,7 @@
                 container.innerHTML += `
                     <div class="dynamic-item-row">
                         <input type="text" class="form-control" style="flex:2;" placeholder="वीडियो शीर्षक" value="${v.title}" onchange="masterData.videos[${idx}].title = this.value">
-                        <input type="text" class="form-control" style="flex:3;" placeholder="YouTube Embed URL (उदा. https://www.youtube.com/embed/...)" value="${v.embedUrl}" onchange="masterData.videos[${idx}].embedUrl = this.value">
+                        <input type="text" class="form-control" style="flex:3;" placeholder="YouTube Link (उदा. https://youtu.be/...)" value="${v.embedUrl || v.url || ''}" onchange="masterData.videos[${idx}].embedUrl = formatYouTubeEmbed(this.value)">
                         <button class="btn btn-danger" onclick="masterData.videos.splice(${idx}, 1); renderVideos();"><i class="fas fa-trash"></i></button>
                     </div>
                 `;
@@ -593,7 +641,7 @@
             renderVideos();
         }
 
-        // गैलरी रेंडर
+        // गैलरी
         function renderGallery() {
             const list = document.getElementById('admin-gallery-list');
             list.innerHTML = '';
@@ -617,7 +665,7 @@
             renderGallery();
         }
 
-        // 2. सम्पूर्ण डेटा को GitHub API द्वारा data.json में सेव करना
+        // 2. GitHub API द्वारा data.json में संपूर्ण डेटा सुरक्षित करना
         async function saveAllToGitHub() {
             const owner = document.getElementById('gh-owner').value.trim();
             const repo = document.getElementById('gh-repo').value.trim();
@@ -632,8 +680,21 @@
             const deptText = document.getElementById('inp-departments').value.trim();
             const deptArray = deptText.split('\n').map(d => d.trim()).filter(d => d.length > 0);
 
+            // वीडियो URLs को अंतिम बार Embed में सुनिश्चित करना
+            masterData.videos = masterData.videos.map(v => ({
+                title: v.title,
+                embedUrl: formatYouTubeEmbed(v.embedUrl || v.url)
+            }));
+
             const finalJSON = {
                 notice: document.getElementById('inp-notice').value,
+                socialLinks: {
+                    facebook: document.getElementById('soc-fb').value,
+                    twitter: document.getElementById('soc-tw').value,
+                    instagram: document.getElementById('soc-in').value,
+                    youtube: document.getElementById('soc-yt').value,
+                    whatsapp: document.getElementById('soc-wa').value
+                },
                 leaders: {
                     president: {
                         name: document.getElementById('inp-pres-name').value,
@@ -663,7 +724,7 @@
 
             try {
                 const bodyPayload = {
-                    message: "Master Portal Data Updated via Admin Panel",
+                    message: "Portal Full Data Updated via Master Admin Panel",
                     content: encodedContent
                 };
                 if (currentSHA) bodyPayload.sha = currentSHA;
