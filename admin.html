@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पोर्टल एडमिन कंट्रोल - GitHub API</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #0f172a;
+            --gold: #d97706;
+            --gold-light: #fef3c7;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --border: #cbd5e1;
+            --accent: #16a34a;
+            --danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 25px 15px;
+            line-height: 1.5;
+        }
+
+        .admin-container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        /* हेडर */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 25px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-bottom: 3px solid var(--gold);
+        }
+        .header h1 {
+            font-size: 22px;
+            color: #fef08a;
+            margin-bottom: 6px;
+        }
+
+        /* कार्ड स्टाइल */
+        .card {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        .card h2 {
+            font-size: 17px;
+            margin-bottom: 18px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 13.5px;
+            color: #334155;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        textarea.form-control {
+            resize: vertical;
+            min-height: 85px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* बटन्स */
+        .btn {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: #172554; }
+        .btn-gold { background: var(--gold); color: #fff; }
+        .btn-gold:hover { background: #b45309; }
+        .btn-danger { background: var(--danger); color: #fff; padding: 6px 10px; font-size: 12px; border-radius: 4px; }
+        .btn-danger:hover { background: #b91c1c; }
+
+        /* स्टेटस अलर्ट बॉक्स */
+        .status-msg {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 22px;
+            font-size: 14.5px;
+            font-weight: 600;
+            display: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+        .status-success { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .status-error { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+        /* गैलरी ग्रिड */
+        .gallery-admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .gallery-admin-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+        .gallery-admin-card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            display: block;
+        }
+        .gallery-admin-card p {
+            font-size: 12px;
+            padding: 6px 8px;
+            font-weight: 700;
+            text-align: center;
+            color: #334155;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .gallery-admin-card button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        /* लॉगिन लॉक स्क्रीन */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .login-box {
+            background: #fff;
+            padding: 35px 25px;
+            border-radius: 12px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .login-box h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- पासवर्ड सुरक्षा स्क्रीन (डिफ़ॉल्ट पासवर्ड: admin123) -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h3><i class="fas fa-lock"></i> एडमिन लॉगिन</h3>
+            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 15px;">पोर्टल प्रबंधन हेतु पासवर्ड दर्ज करें</p>
+            <input type="password" id="admin-pass" class="form-control" placeholder="पासवर्ड दर्ज करें" style="margin-bottom: 15px;">
+            <button class="btn btn-gold" style="width: 100%;" onclick="checkAuth()"><i class="fas fa-sign-in-alt"></i> लॉगिन करें</button>
+        </div>
+    </div>
+
+    <!-- मुख्य एडमिन डैशबोर्ड -->
+    <div class="admin-container" id="admin-panel" style="display: none;">
+        <div class="header">
+            <h1><i class="fab fa-github"></i> मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</h1>
+            <p style="font-size: 13.5px; opacity: 0.9;">पोर्टल डेटा प्रबंधन एवं GitHub API ऑटोमेशन पैनल</p>
+        </div>
+
+        <div id="status-box" class="status-msg"></div>
+
+        <!-- 1. GitHub API कॉन्फ़िगरेशन -->
+        <div class="card">
+            <h2><i class="fas fa-cog"></i> 1. GitHub रिपॉजिटरी सेटिंग्स (वन-टाइम सेटअप)</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>GitHub यूज़रनेम (Username/Org):</label>
+                    <input type="text" id="gh-owner" class="form-control" placeholder="उदा. roshan-prajapati">
+                </div>
+                <div class="form-group">
+                    <label>रिपॉजिटरी का नाम (Repository Name):</label>
+                    <input type="text" id="gh-repo" class="form-control" placeholder="उदा. outsource-portal">
+                </div>
+                <div class="form-group">
+                    <label>फ़ाइल का नाम (File Path):</label>
+                    <input type="text" id="gh-path" class="form-control" value="data.json">
+                </div>
+                <div class="form-group">
+                    <label>GitHub Personal Access Token (PAT):</label>
+                    <input type="password" id="gh-token" class="form-control" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="loadFromGitHub()"><i class="fas fa-sync-alt"></i> GitHub से वर्तमान डेटा लोड करें</button>
+        </div>
+
+        <!-- 2. पोर्टल सेटिंग्स व सूचना -->
+        <div class="card">
+            <h2><i class="fas fa-bullhorn"></i> 2. सामान्य जानकारी व मुख्य सूचना</h2>
+            <div class="form-group">
+                <label>शीर्ष सूचना टिकर (Top Notice Text):</label>
+                <textarea id="inp-notice" class="form-control"></textarea>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>अध्यक्ष का नाम:</label>
+                    <input type="text" id="inp-pres-name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>अध्यक्ष का फ़ोन नंबर:</label>
+                    <input type="text" id="inp-pres-phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>संगठन मंत्री का नाम:</label>
+                    <input type="text" id="inp-sec-name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>संगठन मंत्री का संपर्क सूत्र:</label>
+                    <input type="text" id="inp-sec-phone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>कुल सक्रिय सदस्य संख्या (Member Count):</label>
+                    <input type="text" id="inp-member-count" class="form-control" placeholder="उदा. 25,480">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>हमारा लक्ष्य विवरण (Goal Text):</label>
+                <textarea id="inp-goal-text" class="form-control"></textarea>
+            </div>
+        </div>
+
+        <!-- 3. फोटो गैलरी प्रबंधन -->
+        <div class="card">
+            <h2><i class="fas fa-images"></i> 3. फोटो गैलरी प्रबंधन</h2>
+            <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: flex-end;">
+                <div class="form-group" style="margin: 0;">
+                    <label>फोटो का डायरेक्ट लिंक (Image URL):</label>
+                    <input type="text" id="inp-img-url" class="form-control" placeholder="https://...">
+                </div>
+                <div class="form-group" style="margin: 0;">
+                    <label>कैप्शन / शीर्षक:</label>
+                    <input type="text" id="inp-img-title" class="form-control" placeholder="उदा. प्रांतीय बैठक">
+                </div>
+                <button class="btn btn-gold" onclick="addPhoto()"><i class="fas fa-plus"></i> जोड़ें</button>
+            </div>
+
+            <div class="gallery-admin-grid" id="admin-gallery-list"></div>
+        </div>
+
+        <!-- 4. फाइनल सेव बटन -->
+        <div style="text-align: center; margin-bottom: 40px;">
+            <button class="btn btn-gold" style="padding: 15px 40px; font-size: 16px;" onclick="saveToGitHub()">
+                <i class="fas fa-cloud-upload-alt"></i> GitHub पर सेव व लाइव पब्लिश करें
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentSHA = null;
+        let galleryData = [];
+
+        // 1. पासवर्ड ऑथेंटिकेशन
+        function checkAuth() {
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === "admin123") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'block';
+                initSavedConfig();
+            } else {
+                alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
+            }
+        }
+
+        // 2. लोकल स्टोरेज से क्रेडेंशियल्स स्वतः भरना
+        function initSavedConfig() {
+            if (localStorage.getItem('gh_owner')) document.getElementById('gh-owner').value = localStorage.getItem('gh_owner');
+            if (localStorage.getItem('gh_repo')) document.getElementById('gh-repo').value = localStorage.getItem('gh_repo');
+            if (localStorage.getItem('gh_path')) document.getElementById('gh-path').value = localStorage.getItem('gh_path');
+            if (localStorage.getItem('gh_token')) document.getElementById('gh-token').value = localStorage.getItem('gh_token');
+            
+            if (localStorage.getItem('gh_token') && localStorage.getItem('gh_owner') && localStorage.getItem('gh_repo')) {
+                loadFromGitHub();
+            }
+        }
+
+        function showStatus(text, isSuccess) {
+            const box = document.getElementById('status-box');
+            box.innerText = text;
+            box.className = 'status-msg ' + (isSuccess ? 'status-success' : 'status-error');
+            box.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 3. GitHub API से data.json लोड करना
+        async function loadFromGitHub() {
+            const owner = document.getElementById('gh-owner').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const path = document.getElementById('gh-path').value.trim();
+            const token = document.getElementById('gh-token').value.trim();
+
+            if (!owner || !repo || !token) {
+                showStatus("कृपया पहले GitHub Username, Repository और Token भरें।", false);
+                return;
+            }
+
+            // लोकल सेव
+            localStorage.setItem('gh_owner', owner);
+            localStorage.setItem('gh_repo', repo);
+            localStorage.setItem('gh_path', path);
+            localStorage.setItem('gh_token', token);
+
+            try {
+                const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("फ़ाइल लोड नहीं हो सकी। कृपया रिपॉजिटरी का नाम व टोकन जांचें।");
+
+                const fileData = await res.json();
+                currentSHA = fileData.sha;
+
+                // Base64 डिकोड (हिंदी/यूनिकोड सेफ)
+                const content = decodeURIComponent(escape(atob(fileData.content)));
+                const json = JSON.parse(content);
+
+                document.getElementById('inp-notice').value = json.notice || '';
+                if (json.leaders) {
+                    document.getElementById('inp-pres-name').value = json.leaders.president?.name || '';
+                    document.getElementById('inp-pres-phone').value = json.leaders.president?.phone || '';
+                    document.getElementById('inp-sec-name').value = json.leaders.secretary?.name || '';
+                    document.getElementById('inp-sec-phone').value = json.leaders.secretary?.phone || '';
+                }
+                document.getElementById('inp-member-count').value = json.memberCount || '';
+                document.getElementById('inp-goal-text').value = json.goalText || '';
+
+                galleryData = json.gallery || [];
+                renderGallery();
+
+                showStatus("GitHub से डेटा सफलतापूर्वक लोड हो गया!", true);
+            } catch (err) {
+                showStatus("एरर: " + err.message, false);
+            }
+        }
+
+        // 4. गैलरी रेंडर व जोड़ना/हटाना
+        function renderGallery() {
+            const list = document.getElementById('admin-gallery-list');
+            list.innerHTML = '';
+            galleryData.forEach((img, idx) => {
+                list.innerHTML += `
+                    <div class="gallery-admin-card">
+                        <img src="${img.url}" alt="${img.title || ''}">
+                        <p>${img.title || 'फोटो ' + (idx + 1)}</p>
+                        <button class="btn btn-danger" onclick="deletePhoto(${idx})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function addPhoto() {
+            const url = document.getElementById('inp-img-url').value.trim();
+            const title = document.getElementById('inp-img-title').value.trim();
+            if (!url) {
+                alert("कृपया फोटो का URL दर्ज करें।");
+                return;
+            }
+            galleryData.push({ url, title });
+            document.getElementById('inp-img-url').value = '';
+            document.getElementById('inp-img-title').value = '';
+            renderGallery();
+        }
+
+        function deletePhoto(idx) {
+            galleryData.splice(idx, 1);
+            renderGallery();
+        }
+
+        // 5. GitHub API के ज़रिए data.json फ़ाइल को Commit & Push करना
+        async function saveToGitHub() {
+            const owner = document.getElementById('gh-owner').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const path = document.getElementById('gh-path').value.trim();
+            const token = document.getElementById('gh-token').value.trim();
+
+            if (!token) {
+                showStatus("GitHub Token अनिवार्य है!", false);
+                return;
+            }
+
+            const updatedJSON = {
+                notice: document.getElementById('inp-notice').value,
+                leaders: {
+                    president: {
+                        name: document.getElementById('inp-pres-name').value,
+                        phone: document.getElementById('inp-pres-phone').value
+                    },
+                    secretary: {
+                        name: document.getElementById('inp-sec-name').value,
+                        phone: document.getElementById('inp-sec-phone').value
+                    }
+                },
+                memberCount: document.getElementById('inp-member-count').value,
+                goalText: document.getElementById('inp-goal-text').value,
+                gallery: galleryData
+            };
+
+            // UTF-8 से Base64 सुरक्षित एन्कोडिंग
+            const jsonString = JSON.stringify(updatedJSON, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+
+            showStatus("GitHub पर सेव हो रहा है, कृपया प्रतीक्षा करें...", true);
+
+            try {
+                const bodyPayload = {
+                    message: "Portal Data Updated via Admin Panel",
+                    content: encodedContent
+                };
+                if (currentSHA) bodyPayload.sha = currentSHA;
+
+                const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                if (!res.ok) throw new Error("कमिट असफल रहा। कृपया टोकन की permissions जांचें।");
+
+                const resData = await res.json();
+                currentSHA = resData.content.sha;
+                showStatus("बधाई! डेटा सफलतापूर्वक GitHub (data.json) पर अपडेट हो गया और वेबसाइट पर लाइव हो गया।", true);
+            } catch (err) {
+                showStatus("सेव नहीं हो सका: " + err.message, false);
+            }
+        }
+    </script>
+</body>
+</html>
