@@ -1,70 +1,1181 @@
-fetch('data.json')
-    .then(res => res.json())
-    .then(data => {
-        if (data.notice) document.getElementById('dyn-notice').innerText = data.notice;
-        
-        if (data.leaders) {
-            if (data.leaders.president) {
-                document.getElementById('dyn-pres-name').innerText = data.leaders.president.name;
-                document.getElementById('dyn-pres-phone').innerText = data.leaders.president.phone;
-            }
-            if (data.leaders.secretary) {
-                document.getElementById('dyn-sec-name').innerText = data.leaders.secretary.name;
-                document.getElementById('dyn-sec-phone').innerText = data.leaders.secretary.phone;
-            }
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</title>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --surface: #ffffff;
+            --primary: #1e3a8a;
+            --primary-dark: #0f172a;
+            --gold: #d97706;
+            --gold-light: #fef3c7;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent: #16a34a;
+            --danger: #dc2626;
+            --bottom-nav-height: 65px;
         }
 
-        if (data.memberCount) document.getElementById('member-count').innerText = data.memberCount;
-        if (data.goalText) document.getElementById('dyn-goal-text').innerText = data.goalText;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        // पदाधिकारी सूची
-        if (data.committee && data.committee.length > 0) {
-            const comContainer = document.getElementById('dyn-committee-list');
-            comContainer.innerHTML = '';
-            data.committee.forEach((c, idx) => {
-                comContainer.innerHTML += `<div class="list-row"><span>${idx + 1}. ${c.name}</span><b>${c.role}</b></div>`;
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: var(--bottom-nav-height);
+        }
+
+        /* 1. शीर्ष सूचना पट्टी (Notice Ticker) */
+        .top-notice-bar {
+            background-color: var(--primary-dark);
+            color: #ffffff;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--gold);
+        }
+        .notice-label-wrapper {
+            position: relative;
+            z-index: 10;
+            background-color: var(--primary-dark);
+            padding: 0 12px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            box-shadow: 4px 0 8px rgba(15, 23, 42, 0.9);
+        }
+        .notice-label {
+            background: var(--gold);
+            color: #ffffff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            font-size: 11.5px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .notice-ticker-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .notice-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 28s linear infinite;
+            font-weight: 700;
+            font-size: 13.5px;
+            color: #fef08a;
+            padding-left: 100%;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* 2. मुख्य नेविगेशन बार */
+        .navbar {
+            background-color: var(--surface);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .brand-logo {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-logo img {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            object-fit: cover;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 10px;
+            align-items: center;
+        }
+        .nav-links > li { position: relative; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .nav-links a:hover {
+            color: var(--primary);
+            background: var(--gold-light);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--surface);
+            min-width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            list-style: none;
+            padding: 8px 0;
+            z-index: 1001;
+        }
+        .dropdown-menu li a {
+            padding: 9px 16px;
+            font-weight: 500;
+            font-size: 13.5px;
+            color: var(--text-dark);
+            display: block;
+        }
+        .dropdown-menu li a:hover {
+            background-color: var(--bg-main);
+            color: var(--primary);
+        }
+        .nav-links li:hover .dropdown-menu { display: block; }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 22px;
+            color: var(--primary);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 3. मोबाइल साइड ड्रॉअर मेन्यू */
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--surface);
+            z-index: 10001;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            transition: left 0.3s ease;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .mobile-drawer.open { left: 0; }
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            display: none;
+        }
+        .drawer-overlay.active { display: block; }
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+        .drawer-links { list-style: none; }
+        .drawer-links li { margin-bottom: 10px; }
+        .drawer-links a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            font-weight: 600;
+            display: block;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .drawer-links a:hover { background: var(--gold-light); color: var(--gold); }
+
+        /* 4. फ्लोटिंग सोशल मीडिया बार (Scroll Hide/Unhide) */
+        .floating-social-sidebar {
+            position: fixed;
+            right: 0;
+            top: 45%;
+            transform: translateY(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .floating-social-sidebar.hide {
+            transform: translateY(-50%) translateX(120%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 17px;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .btn-fb { background-color: #1877f2; }
+        .btn-tw { background-color: #000000; }
+        .btn-in { background-color: #e4405f; }
+        .btn-yt { background-color: #cd201f; }
+        .btn-wa { background-color: #25d366; }
+
+        /* 5. फुल-स्क्रीन ऑटो स्लाइडर */
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            height: 50vh;
+            min-height: 320px;
+            overflow: hidden;
+            background-color: #0f172a;
+            touch-action: pan-y;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .slide.active { opacity: 1; }
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.85) 100%);
+        }
+        .slide-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #ffffff;
+            padding: 0 15px;
+            max-width: 900px;
+        }
+        .slide-content h2 {
+            font-size: 26px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            color: #fef08a;
+            text-transform: uppercase;
+        }
+        .slide-content p {
+            font-size: 14px;
+            color: #f1f5f9;
+        }
+        .slide-dots {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 3;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dot.active {
+            background: var(--gold);
+            width: 24px;
+            border-radius: 5px;
+        }
+
+        /* 6. मुख्य कंटेनर */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 14px;
+        }
+
+        .leaders-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--surface);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .leader-box { font-size: 12.5px; color: var(--text-dark); }
+        .leader-box b { display: block; color: var(--primary); font-size: 13.5px; }
+
+        .counter-card {
+            background: var(--surface);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            text-align: center;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08);
+        }
+        .counter-card h2 { font-size: 36px; color: var(--gold); font-weight: 900; }
+        .counter-card p { font-size: 14px; color: var(--text-dark); font-weight: 700; }
+
+        /* डायनामिक एक्शन ग्रिड */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .action-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--text-dark);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-card:hover, .action-card:active {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        .action-card i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+        .action-card span { font-size: 12.5px; font-weight: 800; text-transform: uppercase; }
+        .action-card.btn-gold-card {
+            background: var(--gold);
+            color: #ffffff;
+            border-color: var(--gold);
+            grid-column: span 2;
+        }
+        .action-card.btn-gold-card i { color: #ffffff; }
+
+        .share-strip { margin-bottom: 25px; }
+        .btn-share {
+            width: 100%;
+            padding: 13px;
+            background: #25D366;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+        }
+
+        .content-view {
+            display: none;
+            animation: fadeIn 0.3s ease forwards;
+            margin-bottom: 25px;
+        }
+        .content-view.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .info-card h3 {
+            font-size: 16px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 6px;
+            margin-bottom: 12px;
+        }
+        .list-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13.5px;
+            color: var(--text-dark);
+        }
+        .list-row:last-child { border: none; }
+        .list-row b { color: var(--primary); text-align: right; }
+
+        .dept-grid {
+            columns: 2;
+            gap: 20px;
+            color: var(--text-dark);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* 7. फोटो व वीडियो गैलरी ग्रिड्स */
+        .bottom-gallery {
+            background-color: var(--surface);
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 25px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+        }
+        .gallery-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            height: 140px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+        }
+        .gallery-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.85);
+            color: #ffffff;
+            font-size: 11.5px;
+            padding: 4px 6px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+        }
+        .video-card {
+            background: var(--bg-main);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .video-card iframe {
+            width: 100%;
+            height: 160px;
+            border: none;
+            display: block;
+        }
+        .video-title {
+            padding: 8px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .custom-link-btn {
+            background: var(--bg-main);
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        /* 8. मोबाइल बॉटम बार (App-like Bottom Nav) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--bottom-nav-height);
+            background: var(--surface);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 10000;
+        }
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            flex: 1;
+            height: 100%;
+            transition: color 0.2s;
+        }
+        .bottom-nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .bottom-nav-item.active, .bottom-nav-item:hover { color: var(--gold); }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: #94a3b8;
+            padding: 40px 16px 20px;
+            margin-top: 30px;
+        }
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #334155;
+        }
+        .footer-col h4 {
+            color: var(--gold);
+            font-size: 15px;
+            margin-bottom: 12px;
+            font-weight: 700;
+            border-left: 3px solid var(--gold);
+            padding-left: 8px;
+        }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 6px; }
+        .footer-col ul li a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 16px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* मीडिया क्वेरीज़ (Mobile Friendly Breakpoints) */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .dept-grid { columns: 1; }
+            .leaders-bar { flex-direction: column; gap: 6px; }
+            .slider-wrapper { height: 42vh; min-height: 280px; }
+            .slide-content h2 { font-size: 20px; }
+            .slide-content p { font-size: 12.5px; }
+            .action-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (min-width: 769px) {
+            .bottom-nav { display: none; }
+            body { padding-bottom: 0; }
+            .links-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+            .action-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+            .action-card.btn-gold-card { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. शीर्ष सूचना पट्टी -->
+    <div class="top-notice-bar">
+        <div class="notice-label-wrapper">
+            <span class="notice-label"><i class="fa-solid fa-bullhorn"></i> सूचना</span>
+        </div>
+        <div class="notice-ticker-container">
+            <div class="notice-ticker" id="dyn-notice">
+                मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ • अपने अधिकारों व सुरक्षित भविष्य के लिए संगठन से जुड़ें • पंजीयन: श्रम विभाग
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. फ्लोटिंग सोशल साइडबार -->
+    <div class="floating-social-sidebar" id="socialSidebar">
+        <a href="https://facebook.com" target="_blank" class="social-btn btn-fb"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://x.com" target="_blank" class="social-btn btn-tw"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://instagram.com" target="_blank" class="social-btn btn-in"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://youtube.com" target="_blank" class="social-btn btn-yt"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://whatsapp.com" target="_blank" class="social-btn btn-wa"><i class="fa-brands fa-whatsapp"></i></a>
+    </div>
+
+    <!-- 3. नेविगेशन बार -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#" class="brand-logo">
+                <img src="https://lh3.googleusercontent.com/d/1_3vjppXdkVUv0voXV0eoKOiiz3iYQA9C" alt="Logo">
+                <span>म.प्र. आउटसोर्स संघ</span>
+            </a>
+            
+            <button class="mobile-menu-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
+
+            <ul class="nav-links">
+                <li><a href="javascript:void(0)" onclick="showTab('home')">होम</a></li>
+                <li>
+                    <a href="javascript:void(0)">संगठन <i class="fa-solid fa-chevron-down text-xs"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0)" onclick="showTab('committee')">मुख्य पदाधिकारी</a></li>
+                        <li><a href="javascript:void(0)" onclick="showTab('dept')">संबद्ध विभाग सूची</a></li>
+                        <li><a href="javascript:void(0)" onclick="showTab('why')">संगठन का उद्देश्य</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)">मार्गदर्शिका <i class="fa-solid fa-chevron-down text-xs"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:void(0)" onclick="showTab('why')">समान कार्य समान वेतन</a></li>
+                        <li><a href="javascript:void(0)" onclick="showTab('why')">Principal Employer नियम</a></li>
+                        <li><a href="javascript:void(0)" onclick="showTab('why')">वेतन, PF व ESIC का गणित</a></li>
+                    </ul>
+                </li>
+                <li><a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank">रजिस्ट्रेशन</a></li>
+                <li><a href="https://uvaaoutsource.blogspot.com/p/singin.html" target="_blank">लॉगिन</a></li>
+                <li><a href="#gallery">फोटो गैलरी</a></li>
+                <li><a href="admin.html" target="_blank" style="color:var(--gold);"><i class="fas fa-lock"></i> एडमिन</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- मोबाइल ड्रॉअर मेन्यू -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
+    <div class="mobile-drawer" id="mobileDrawer">
+        <div class="drawer-header">
+            <h4 style="color:var(--primary);"><i class="fas fa-bars"></i> मेन्यू सूची</h4>
+            <button onclick="toggleDrawer()" style="border:none; background:none; font-size:18px; color:var(--danger);"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="drawer-links">
+            <li><a href="javascript:void(0)" onclick="showTab('home'); toggleDrawer();"><i class="fas fa-home"></i> होम</a></li>
+            <li><a href="javascript:void(0)" onclick="showTab('committee'); toggleDrawer();"><i class="fas fa-users"></i> मुख्य पदाधिकारी</a></li>
+            <li><a href="javascript:void(0)" onclick="showTab('dept'); toggleDrawer();"><i class="fas fa-building"></i> संबद्ध विभाग सूची</a></li>
+            <li><a href="javascript:void(0)" onclick="showTab('why'); toggleDrawer();"><i class="fas fa-gavel"></i> अधिकार मार्गदर्शिका</a></li>
+            <li><a href="#links-sec" onclick="toggleDrawer()"><i class="fas fa-link"></i> महत्वपूर्ण लिंक्स</a></li>
+            <li><a href="#videos" onclick="toggleDrawer()"><i class="fas fa-video"></i> वीडियो गैलरी</a></li>
+            <li><a href="#gallery" onclick="toggleDrawer()"><i class="fas fa-images"></i> फोटो गैलरी</a></li>
+            <li><a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank" style="background:var(--gold); color:#fff;"><i class="fas fa-user-plus"></i> नया रजिस्ट्रेशन</a></li>
+        </ul>
+    </div>
+
+    <!-- 4. फुल-स्क्रीन ऑटो व स्वाइप स्लाइडर -->
+    <section class="slider-wrapper" id="dyn-slider-wrapper">
+        <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80');">
+            <div class="slide-content">
+                <h2>मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ</h2>
+                <p>शोषण मुक्त आउटसोर्सिंग एवं संगठित कर्मचारी शक्ति का सशक्त मंच</p>
+            </div>
+        </div>
+        <div class="slide-dots" id="dyn-slider-dots"></div>
+    </section>
+
+    <!-- मुख्य कंटेनर -->
+    <main class="container">
+        <!-- लीडर्स बार -->
+        <section class="leaders-bar">
+            <div class="leader-box">
+                <b id="dyn-pres-name">आशीष सिंह सिसोदिया (अध्यक्ष)</b>
+                <i class="fas fa-phone-alt"></i> <span id="dyn-pres-phone">7017745459</span>
+            </div>
+            <div class="leader-box" style="text-align: right;">
+                <b id="dyn-sec-name">श्री विनेन्द्र सिंह (संगठन मंत्री)</b>
+                <i class="fas fa-phone-alt"></i> <span id="dyn-sec-phone">संपर्क सूत्र</span>
+            </div>
+        </section>
+
+        <!-- डायनामिक एक्शन ग्रिड -->
+        <div class="action-grid" id="dyn-action-grid">
+            <a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank" class="action-card btn-gold-card">
+                <i class="fas fa-user-plus"></i><span>नया रजिस्ट्रेशन (Join Us)</span>
+            </a>
+            <div class="action-card" onclick="showTab('committee')">
+                <i class="fas fa-users-cog"></i><span>पदाधिकारी</span>
+            </div>
+            <div class="action-card" onclick="showTab('dept')">
+                <i class="fas fa-building"></i><span>विभाग सूची</span>
+            </div>
+            <div class="action-card" onclick="showTab('why')">
+                <i class="fas fa-gavel"></i><span>अधिकार मार्गदर्शिका</span>
+            </div>
+            <a href="https://uvaaoutsource.blogspot.com/p/singin.html" target="_blank" class="action-card">
+                <i class="fas fa-sign-in-alt"></i><span>लॉगिन पोर्टल</span>
+            </a>
+        </div>
+
+        <!-- शेयर बटन -->
+        <div class="share-strip">
+            <button class="btn-share" onclick="shareWeb()">
+                <i class="fab fa-whatsapp"></i> सोशल मीडिया पर शेयर करें
+            </button>
+        </div>
+
+        <!-- 1. होम टैब -->
+        <div id="tab-home" class="content-view active">
+            <div class="counter-card">
+                <h2 id="member-count">25,480</h2>
+                <p>कुल सक्रिय आउटसोर्स सदस्य</p>
+            </div>
+
+            <div class="info-card" style="text-align: center;">
+                <h3>"हमारा लक्ष्य: शोषण मुक्त आउटसोर्सिंग"</h3>
+                <p style="font-size: 13.5px; color: var(--text-dark);" id="dyn-goal-text">
+                    हम मध्य प्रदेश के हर विभाग के आउटसोर्स कर्मचारी को एकजुट करने के मिशन पर हैं। चाहे वह छंटनी की समस्या हो, वेतन में देरी हो, या स्थायी नीति की मांग—संगठन हर कदम पर आपके साथ है।
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. पदाधिकारी टैब -->
+        <div id="tab-committee" class="content-view">
+            <div class="info-card">
+                <h3>मुख्य पदाधिकारी एवं सदस्य सूची</h3>
+                <div id="dyn-committee-list"></div>
+                <div class="list-row" style="border-top: 2px solid var(--gold); margin-top: 12px; padding-top: 10px;">
+                    <span id="dyn-it-head">श्री रोशन प्रजापति</span><b>तकनीकी आईटी टीम प्रबंधन</b>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. विभाग सूची टैब -->
+        <div id="tab-dept" class="content-view">
+            <div class="info-card">
+                <h3>उक्त शासकीय विभाग में कार्यरत आउटसोर्स कर्मचारियों का संगठन</h3>
+                <div class="dept-grid" id="dyn-dept-container"></div>
+                <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                    * एवं अन्य समस्त शासकीय विभाग/निगम/मण्डल/अस्पताल
+                </p>
+            </div>
+        </div>
+
+        <!-- 4. अधिकार टैब -->
+        <div id="tab-why" class="content-view">
+            <div class="info-card" style="text-align: center;">
+                <h2 style="color: var(--primary); font-size: 18px; text-transform: uppercase;">आउटसोर्स कर्मचारी महा-अधिकार मार्गदर्शिका</h2>
+                <p style="color: var(--gold); font-size: 12.5px; font-weight: bold;">"संगठन, शक्ति और वैधानिक अधिकारों का संपूर्ण ज्ञान"</p>
+            </div>
+
+            <div class="info-card">
+                <h3>1. संगठन क्यों अनिवार्य है?</h3>
+                <p style="font-size:13px; color:var(--text-dark); margin-bottom:8px;">
+                    एक अकेला कर्मचारी जब अपने हक की बात करता है, तो उसे नौकरी से निकालने की धमकी दी जाती है।
+                </p>
+                <b style="color: var(--primary); font-size:13px;">अ. सामूहिक सौदेबाजी (Collective Bargaining):</b>
+                <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:8px;">
+                    जब हजारों कर्मचारी एक स्वर में अपनी मांग रखते हैं, तो वह 'प्रार्थना' नहीं, बल्कि 'चेतावनी' बन जाती है।
+                </p>
+                <b style="color: var(--primary); font-size:13px;">ब. मनोवैज्ञानिक और सामाजिक सुरक्षा:</b>
+                <p style="font-size:12.5px; color:var(--text-muted);">
+                    दुर्घटना, बीमारी या अचानक नौकरी छूटने की स्थिति में संगठन के सदस्य परिवार की तरह साथ खड़े होते हैं।
+                </p>
+            </div>
+
+            <div class="info-card" style="border-left: 4px solid var(--accent);">
+                <h3 style="color: var(--accent); border-color: var(--accent);">2. अनुबंध श्रम (नियमन और उन्मूलन) अधिनियम, 1970</h3>
+                <p style="font-size:13px; color:var(--text-dark); margin-bottom:6px;">
+                    <strong style="color: var(--accent);">• समान कार्य, समान वेतन (Section 25(2)(v)(a)):</strong><br>
+                    माननीय सुप्रीम कोर्ट के निर्देशानुसार नियमित कर्मचारी के समान पद और कार्य होने पर उस पद का न्यूनतम वेतनमान देय है।
+                </p>
+            </div>
+
+            <div class="info-card" style="border: 1px solid var(--danger); background: #fef2f2;">
+                <h3 style="color: var(--danger); border-color: var(--danger);">3. Principal Employer (मुख्य नियोक्ता) का सिद्धांत</h3>
+                <p style="font-size: 13px; font-weight: bold; color: var(--danger); margin-bottom: 6px;">
+                    क्या आप जानते हैं कि आपका असली मालिक ठेकेदार नहीं, बल्कि वह विभाग है?
+                </p>
+                <p style="font-size:12.5px; color:#475569;">
+                    यदि ठेकेदार वेतन या PF रोकता है, तो कानूनन विभाग की यह बाध्यता है कि वह अपने बजट से समस्त देयों का भुगतान करे।
+                </p>
+            </div>
+
+            <div class="info-card">
+                <h3>4. वेतन, PF और ESIC का गणित</h3>
+                <div class="list-row"><span>न्यूनतम वेतन</span><b>कलेक्टर दर से कम नहीं</b></div>
+                <div class="list-row"><span>EPF (PF)</span><b>12% कटौती + 13% नियोक्ता अंश</b></div>
+                <div class="list-row"><span>ESIC</span><b>मुफ्त चिकित्सा सुविधा</b></div>
+                <div class="list-row"><span>बोनस</span><b>सालाना 8.33% अनिवार्य</b></div>
+            </div>
+        </div>
+
+        <!-- 5. महत्वपूर्ण लिंक्स एवं डाउनलोड्स -->
+        <section class="bottom-gallery" id="links-sec">
+            <h3 style="color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 6px; margin-bottom: 14px;">
+                <i class="fas fa-link"></i> महत्वपूर्ण लिंक्स एवं डाउनलोड्स
+            </h3>
+            <div class="links-grid" id="dyn-links-container"></div>
+        </section>
+
+        <!-- 6. वीडियो गैलरी -->
+        <section class="bottom-gallery" id="videos">
+            <h3 style="color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 6px; margin-bottom: 14px;">
+                <i class="fas fa-video"></i> वीडियो गैलरी एवं सभाएं
+            </h3>
+            <div class="video-grid" id="dyn-videos-container"></div>
+        </section>
+
+        <!-- 7. फोटो गैलरी -->
+        <section class="bottom-gallery" id="gallery">
+            <h3 style="color: var(--primary); border-bottom: 2px solid var(--gold); padding-bottom: 6px; margin-bottom: 14px;">
+                <i class="fas fa-images"></i> फोटो गैलरी एवं गतिविधियां
+            </h3>
+            <div class="gallery-grid" id="dyn-gallery-container"></div>
+        </section>
+    </main>
+
+    <!-- 8. मोबाइल बॉटम बार (App-like Bottom Navigation) -->
+    <nav class="bottom-nav">
+        <a href="javascript:void(0)" class="bottom-nav-item active" onclick="showTab('home')">
+            <i class="fas fa-home"></i><span>होम</span>
+        </a>
+        <a href="javascript:void(0)" class="bottom-nav-item" onclick="showTab('committee')">
+            <i class="fas fa-users"></i><span>पदाधिकारी</span>
+        </a>
+        <a href="javascript:void(0)" class="bottom-nav-item" onclick="showTab('dept')">
+            <i class="fas fa-building"></i><span>विभाग</span>
+        </a>
+        <a href="javascript:void(0)" class="bottom-nav-item" onclick="showTab('why')">
+            <i class="fas fa-gavel"></i><span>अधिकार</span>
+        </a>
+        <a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank" class="bottom-nav-item">
+            <i class="fas fa-user-plus"></i><span>जुड़ें</span>
+        </a>
+    </nav>
+
+    <!-- 9. फुटर -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>संगठन के बारे में</h4>
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="showTab('home')">मुख्य उद्देश्य</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('committee')">कार्यकारिणी समिति</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('dept')">संबद्ध विभाग</a></li>
+                    <li><a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank">सदस्यता अभियान</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>अधिकार एवं कानून</h4>
+                <ul>
+                    <li><a href="javascript:void(0)" onclick="showTab('why')">समान कार्य समान वेतन</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('why')">Principal Employer दायित्व</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('why')">श्रम अधिनियम 1970</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>महत्वपूर्ण लिंक</h4>
+                <ul>
+                    <li><a href="https://uvaaoutsource.blogspot.com/p/singup.html" target="_blank">नया रजिस्ट्रेशन</a></li>
+                    <li><a href="https://uvaaoutsource.blogspot.com/p/singin.html" target="_blank">लॉगिन पोर्टल</a></li>
+                    <li><a href="admin.html" target="_blank">एडमिन लॉगिन</a></li>
+                    <li><a href="javascript:void(0)" onclick="shareWeb()">व्हाट्सएप शेयर</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>संपर्क व सहायता</h4>
+                <ul>
+                    <li><a href="#">प्रदेश कार्यालय: भोपाल, म.प्र.</a></li>
+                    <li><a href="tel:7017745459">हेल्पलाइन: 7017745459</a></li>
+                    <li><a href="#">पंजीयन: श्रम विभाग म.प्र.</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ. सर्वाधिकार सुरक्षित।</p>
+        </div>
+    </footer>
+
+    <!-- डेटा फेचिंग (JSON) एवं इंटरएक्टिव लॉजिक -->
+    <script>
+        let slideInterval;
+        let currentSlide = 0;
+
+        // 1. data.json से डायनामिक डेटा लोड करना
+        fetch('data.json')
+            .then(res => res.json())
+            .then(data => {
+                if (data.notice) document.getElementById('dyn-notice').innerText = data.notice;
+                
+                if (data.leaders) {
+                    if (data.leaders.president) {
+                        document.getElementById('dyn-pres-name').innerText = data.leaders.president.name;
+                        document.getElementById('dyn-pres-phone').innerText = data.leaders.president.phone;
+                    }
+                    if (data.leaders.secretary) {
+                        document.getElementById('dyn-sec-name').innerText = data.leaders.secretary.name;
+                        document.getElementById('dyn-sec-phone').innerText = data.leaders.secretary.phone;
+                    }
+                }
+                if (data.memberCount) document.getElementById('member-count').innerText = data.memberCount;
+                if (data.goalText) document.getElementById('dyn-goal-text').innerText = data.goalText;
+                if (data.itHead) document.getElementById('dyn-it-head').innerText = data.itHead;
+
+                // स्लाइडर रेंडरिंग
+                if (data.slider && data.slider.length > 0) {
+                    const sliderWrapper = document.getElementById('dyn-slider-wrapper');
+                    sliderWrapper.innerHTML = '';
+                    let dotsHTML = '<div class="slide-dots" id="dyn-slider-dots">';
+
+                    data.slider.forEach((s, idx) => {
+                        sliderWrapper.innerHTML += `
+                            <div class="slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${s.image}');">
+                                <div class="slide-content">
+                                    <h2>${s.title}</h2>
+                                    <p>${s.subtitle || ''}</p>
+                                </div>
+                            </div>
+                        `;
+                        dotsHTML += `<span class="dot ${idx === 0 ? 'active' : ''}" onclick="setSlide(${idx})"></span>`;
+                    });
+                    dotsHTML += '</div>';
+                    sliderWrapper.innerHTML += dotsHTML;
+                    initSlider();
+                    initTouchSwipe();
+                }
+
+                // एक्शन ग्रिड बटन्स
+                if (data.actionButtons && data.actionButtons.length > 0) {
+                    const actionGrid = document.getElementById('dyn-action-grid');
+                    actionGrid.innerHTML = '';
+                    data.actionButtons.forEach(btn => {
+                        const isExternal = btn.link && btn.link.startsWith('http');
+                        const isTab = btn.tab ? `onclick="showTab('${btn.tab}')"` : '';
+                        const href = isExternal ? `href="${btn.link}" target="_blank"` : `href="javascript:void(0)"`;
+                        const goldClass = btn.isGold ? 'btn-gold-card' : '';
+
+                        actionGrid.innerHTML += `
+                            <a ${href} ${isTab} class="action-card ${goldClass}">
+                                <i class="${btn.icon || 'fas fa-arrow-right'}"></i>
+                                <span>${btn.title}</span>
+                            </a>
+                        `;
+                    });
+                }
+
+                // पदाधिकारी सूची
+                if (data.committee && data.committee.length > 0) {
+                    const comContainer = document.getElementById('dyn-committee-list');
+                    comContainer.innerHTML = '';
+                    data.committee.forEach((c, idx) => {
+                        comContainer.innerHTML += `<div class="list-row"><span>${idx + 1}. ${c.name}</span><b>${c.role}</b></div>`;
+                    });
+                }
+
+                // विभाग सूची
+                if (data.departments && data.departments.length > 0) {
+                    const deptContainer = document.getElementById('dyn-dept-container');
+                    deptContainer.innerHTML = data.departments.map(d => `${d}`).join('<br>\n');
+                }
+
+                // महत्वपूर्ण लिंक्स
+                if (data.importantLinks && data.importantLinks.length > 0) {
+                    const linksContainer = document.getElementById('dyn-links-container');
+                    linksContainer.innerHTML = '';
+                    data.importantLinks.forEach(l => {
+                        linksContainer.innerHTML += `
+                            <a href="${l.url}" target="_blank" class="custom-link-btn">
+                                <i class="${l.icon || 'fas fa-file-pdf'}"></i>
+                                <span>${l.title}</span>
+                            </a>
+                        `;
+                    });
+                }
+
+                // वीडियो गैलरी
+                if (data.videos && data.videos.length > 0) {
+                    const videoContainer = document.getElementById('dyn-videos-container');
+                    videoContainer.innerHTML = '';
+                    data.videos.forEach(v => {
+                        videoContainer.innerHTML += `
+                            <div class="video-card">
+                                <iframe src="${v.embedUrl}" allowfullscreen loading="lazy"></iframe>
+                                <div class="video-title">${v.title}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // फोटो गैलरी
+                if (data.gallery && data.gallery.length > 0) {
+                    const galleryContainer = document.getElementById('dyn-gallery-container');
+                    galleryContainer.innerHTML = '';
+                    data.gallery.forEach(img => {
+                        galleryContainer.innerHTML += `
+                            <div class="gallery-card">
+                                <img src="${img.url}" alt="${img.title || 'Gallery Image'}" loading="lazy">
+                                <div class="gallery-caption">${img.title || ''}</div>
+                            </div>
+                        `;
+                    });
+                }
+            })
+            .catch(err => {
+                console.log("JSON Load Notice:", err);
+                initSlider();
             });
+
+        // ऑटो स्लाइडर इंजन
+        function initSlider() {
+            clearInterval(slideInterval);
+            const slides = document.querySelectorAll('.slide');
+            if (slides.length <= 1) return;
+
+            slideInterval = setInterval(() => {
+                showSlide(currentSlide + 1);
+            }, 5000);
         }
 
-        // विभाग सूची
-        if (data.departments && data.departments.length > 0) {
-            const deptContainer = document.querySelector('.dept-grid');
-            if (deptContainer) {
-                deptContainer.innerHTML = data.departments.map((d, i) => `${i + 1}. ${d}`).join('<br>\n');
-            }
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            if(slides.length === 0) return;
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            if(dots[currentSlide]) dots[currentSlide].classList.add('active');
         }
 
-        // लिंक्स
-        if (data.importantLinks && data.importantLinks.length > 0) {
-            const linksContainer = document.getElementById('dyn-links-container');
-            if (linksContainer) {
-                linksContainer.innerHTML = '';
-                data.importantLinks.forEach(l => {
-                    linksContainer.innerHTML += `<a href="${l.url}" target="_blank" class="custom-link-btn"><i class="${l.icon}"></i><span>${l.title}</span></a>`;
-                });
-            }
+        function setSlide(index) {
+            showSlide(index);
+            initSlider();
         }
 
-        // वीडियो
-        if (data.videos && data.videos.length > 0) {
-            const vContainer = document.getElementById('dyn-videos-container');
-            if (vContainer) {
-                vContainer.innerHTML = '';
-                data.videos.forEach(v => {
-                    vContainer.innerHTML += `<div class="video-card"><iframe src="${v.embedUrl}" allowfullscreen></iframe><div class="video-title">${v.title}</div></div>`;
-                });
-            }
+        // मोबाइल स्वाइप जेस्चर (Touch Swipe)
+        function initTouchSwipe() {
+            const slider = document.getElementById('dyn-slider-wrapper');
+            let startX = 0;
+            slider.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+            }, {passive: true});
+
+            slider.addEventListener('touchend', e => {
+                let endX = e.changedTouches[0].clientX;
+                if (startX - endX > 50) {
+                    showSlide(currentSlide + 1); // स्वाइप लेफ्ट (Next)
+                    initSlider();
+                } else if (endX - startX > 50) {
+                    showSlide(currentSlide - 1); // स्वाइप राइट (Prev)
+                    initSlider();
+                }
+            }, {passive: true});
         }
 
-        // गैलरी
-        if (data.gallery && data.gallery.length > 0) {
-            const gContainer = document.getElementById('dyn-gallery-container');
-            if (gContainer) {
-                gContainer.innerHTML = '';
-                data.gallery.forEach(img => {
-                    gContainer.innerHTML += `<div class="gallery-card"><img src="${img.url}"><div class="gallery-caption">${img.title}</div></div>`;
-                });
-            }
+        // मोबाइल साइडबार ड्रॉअर टॉगल
+        function toggleDrawer() {
+            document.getElementById('mobileDrawer').classList.toggle('open');
+            document.getElementById('drawerOverlay').classList.toggle('active');
         }
-    })
-    .catch(err => console.log("JSON Data loading fallback:", err));
+
+        // टैब स्विचिंग फंक्शन
+        function showTab(id) {
+            document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+            const target = document.getElementById('tab-' + id);
+            if(target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 380, behavior: 'smooth' });
+            }
+
+            // बॉटम नेविगेशन एक्टिव क्लास अपडेट
+            document.querySelectorAll('.bottom-nav-item').forEach(btn => btn.classList.remove('active'));
+            const activeNav = Array.from(document.querySelectorAll('.bottom-nav-item')).find(el => el.getAttribute('onclick')?.includes(id));
+            if (activeNav) activeNav.classList.add('active');
+        }
+
+        // व्हाट्सएप शेयर
+        function shareWeb() {
+            const text = "मध्य प्रदेश राज्य आउटसोर्स कर्मचारी संघ से जुड़ें। रजिस्टर करें: " + window.location.href;
+            window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
+        }
+
+        // फ्लोटिंग सोशल साइडबार स्क्रॉल हाइड/शो
+        let lastScrollTop = 0;
+        const socialSidebar = document.getElementById('socialSidebar');
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 80) {
+                socialSidebar.classList.add('hide');
+            } else {
+                socialSidebar.classList.remove('hide');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, false);
+    </script>
+</body>
+</html>
